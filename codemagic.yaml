@@ -1,0 +1,37 @@
+workflows:
+  # ZIPZIP iOS — Codemagic bulut Mac'inde derlenir (Windows'tan tetiklenir)
+  ios-zipzip:
+    name: ZIPZIP iOS
+    instance_type: mac_mini_m1
+    max_build_duration: 60
+    environment:
+      node: 18
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Bağımlılıkları kur
+        script: npm install
+      - name: Web içeriğini www'ya kopyala
+        script: npm run copy
+      - name: iOS platformunu ekle + senkronla
+        script: |
+          if [ ! -d "ios" ]; then npx cap add ios; fi
+          npx cap sync ios
+      - name: CocoaPods
+        script: |
+          cd ios/App && pod install
+      # --- AŞAMA 1: imzasız derleme (boru hattı çalışıyor mu testi) ---
+      - name: Derle (imzasız — simülatör)
+        script: |
+          xcodebuild -workspace ios/App/App.xcworkspace -scheme App \
+            -configuration Release -sdk iphonesimulator -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
+      # --- AŞAMA 2 (gerçek cihaz/IPA): Apple Developer hesabı bağlandıktan sonra ---
+      # Codemagic UI > Code signing (iOS) ile sertifika/profil ekleyince burayı
+      # imzalı archive + export'a çeviririz. Şimdilik aşama 1 ile pipeline doğrulanır.
+    artifacts:
+      - build/**/*.app
+      - /tmp/xcodebuild_logs/*.log
+    # publishing:
+    #   app_store_connect:   # TestFlight/App Store için (Apple hesabı + API key gerekir)
+    #     auth: integration
