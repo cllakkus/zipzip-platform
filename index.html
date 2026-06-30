@@ -34,12 +34,12 @@
   /* --- dokunmatik kontroller (mobil) --- */
   #touch { display:none; }
   #touch.on { display:block; }
-  .tbtn { position:fixed; bottom:max(16px,4vh); z-index:31; pointer-events:auto; width:clamp(60px,16vw,82px); height:clamp(60px,16vw,82px);
-    font-family:var(--pix); font-size:18px; color:#fff; background:rgba(30,42,74,.5); border:3px solid rgba(255,255,255,.4); border-radius:0;
-    box-shadow:inset -3px -3px 0 rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center; touch-action:none; }
-  .tbtn:active { background:rgba(122,212,255,.55); }
-  #t-left { left:max(16px,3vw); } #t-right { left:calc(max(16px,3vw) + clamp(60px,16vw,82px) + 12px); }
-  #t-jump { right:max(16px,3vw); width:clamp(74px,20vw,104px); height:clamp(74px,20vw,104px); background:rgba(255,194,58,.5); border-color:rgba(255,220,120,.6); }
+  .tbtn { position:fixed; bottom:max(14px,3.5vh); z-index:31; pointer-events:auto; width:clamp(52px,13vw,64px); height:clamp(52px,13vw,64px);
+    font-family:var(--pix); font-size:15px; color:rgba(255,255,255,.92); background:rgba(20,28,52,.32); border:2px solid rgba(255,255,255,.32); border-radius:11px;
+    box-shadow:inset 0 -3px 0 rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; touch-action:none; opacity:.82; transition:transform .06s, background .06s, opacity .12s; }
+  .tbtn:active { background:rgba(122,212,255,.6); transform:scale(.9); opacity:1; }
+  #t-left { left:max(14px,3vw); } #t-right { left:calc(max(14px,3vw) + clamp(52px,13vw,64px) + 10px); }
+  #t-jump { right:max(14px,3vw); width:clamp(64px,16vw,84px); height:clamp(64px,16vw,84px); background:rgba(255,194,58,.38); border-color:rgba(255,220,120,.5); }
   /* dükkan kartları */
   .shop-item { width:118px; background:#141a28; border:3px solid #2a3650; padding:8px; text-align:center; font-family:var(--pix); }
   .shop-item .sw { width:40px; height:40px; margin:2px auto 6px; border:2px solid #00000044; }
@@ -49,8 +49,23 @@
     background:#ffc23a; color:#3a2a04; box-shadow:inset -2px -2px 0 #c98a1e; }
   .shop-item button.equipped { background:#7adb8a; color:#103a18; }
   .shop-item button.locked { background:#566; color:#bcd; }
-  #dev-input { font-family:var(--pix); font-size:18px; width:140px; text-align:center; padding:10px; border:3px solid #2a3650; background:#101522; color:#fff; }
-  #dev-quick button { font-family:var(--pix); font-size:8px; margin:2px; padding:6px 8px; border:none; background:#3a4458; color:#cdd6e8; cursor:pointer; }
+  .row2 { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .btn.pix.sm { font-size:clamp(9px,2.2vw,11px); padding:11px 16px; }
+  .pop { animation:pop 2.4s ease-in-out infinite; } @keyframes pop { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+  .glow { animation:glow 1.1s ease-in-out infinite; } @keyframes glow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.18)} }
+  .coin-line { animation:none; }
+  /* dükkan sekmeleri */
+  .shoptab { font-family:var(--pix); font-size:9px; padding:9px 14px; border:none; cursor:pointer; background:#2a3650; color:#9aa6bd; }
+  .shoptab.on { background:#ffc23a; color:#3a2a04; }
+  #shop-list { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:94%; max-height:46vh; overflow:auto; padding:4px; }
+  /* bölüm seçim ızgarası */
+  #levels-grid { display:grid; grid-template-columns:repeat(10,1fr); gap:6px; max-width:94%; max-height:54vh; overflow:auto; padding:6px; }
+  .lvlcell { font-family:var(--pix); font-size:9px; width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center; cursor:pointer;
+    background:#2f7fd0; color:#fff; box-shadow:inset -2px -2px 0 #1a5a9a, inset 2px 2px 0 #6ab0ee; transition:.08s; }
+  .lvlcell:hover { transform:scale(1.08); }
+  .lvlcell.locked { background:#1a2030; color:#3a4458; cursor:not-allowed; box-shadow:inset -2px -2px 0 #0d1320; }
+  .lvlcell.boss { background:#b03a4a; box-shadow:inset -2px -2px 0 #7a1828, inset 2px 2px 0 #e06a7a; }
+  .lvlcell.locked.boss { background:#3a1a22; color:#5a3038; }
 </style>
 </head>
 <body>
@@ -60,46 +75,53 @@
   <div class="stage">
     <canvas id="game" width="900" height="520"></canvas>
     <div id="overlay" class="overlay">
-      <h2 class="pix-title">ZIP<span style="color:#9ad0ff">ZIP</span></h2>
-      <p class="pix-sub">Gölgehan kızı kaçırdı! 100 bölüm — peşine düş, kurtar.</p>
-      <p class="pix-sub" style="color:#ffd24d">🪙 <span id="menu-coins">0</span></p>
+      <h2 class="pix-title pop">ZIP<span style="color:#9ad0ff">ZIP</span></h2>
+      <p class="pix-sub">GÖLGEHAN KIZI KAÇIRDI! PEŞİNE DÜŞ, KURTAR.</p>
+      <p class="pix-sub coin-line" style="color:#ffd24d">🪙 <span id="menu-coins">0</span></p>
       <button id="btn-continue" class="btn pix hidden">DEVAM ET</button>
       <button id="btn-new" class="btn pix alt">YENİ OYUN</button>
-      <button id="btn-shop" class="btn pix">🪙 DÜKKAN</button>
-      <button id="btn-dev" class="btn pix" style="font-size:9px;background:#9aa6bd;box-shadow:0 0 0 4px #3a4458,5px 5px 0 4px rgba(0,0,0,.45),inset -3px -3px 0 #6a7488,inset 3px 3px 0 #cdd6e8">🛠 TEST PANELİ</button>
+      <div class="row2">
+        <button id="btn-levels" class="btn pix sm">BÖLÜMLER</button>
+        <button id="btn-shop" class="btn pix sm">🪙 DÜKKAN</button>
+      </div>
     </div>
     <div id="death" class="overlay death hidden">
       <h2 class="pix-title">YAKALANDIN!</h2>
-      <p class="pix-sub">Skor: <span id="death-score">0</span></p>
-      <button id="death-retry" class="btn pix">TEKRAR DENE</button>
-      <button id="death-menu" class="btn pix alt">ANA MENÜ</button>
+      <p class="pix-sub">SKOR: <span id="death-score">0</span></p>
+      <button id="death-ad" class="btn pix glow" style="background:#7adb8a;color:#103a18;box-shadow:0 0 0 4px #1f4a2a,5px 5px 0 4px rgba(0,0,0,.45),inset -3px -3px 0 #3f8f4a,inset 3px 3px 0 #c6f0c8">📺 REKLAM İZLE & DEVAM</button>
+      <p class="pix-sub" style="font-size:8px;color:#9ad0ff">ÖLDÜĞÜN YERDEN +2 SN DOKUNULMAZLIK</p>
+      <div class="row2">
+        <button id="death-retry" class="btn pix sm alt">BAŞTAN</button>
+        <button id="death-menu" class="btn pix sm">ANA MENÜ</button>
+      </div>
     </div>
     <div id="ending" class="overlay hidden">
-      <h2 class="pix-title" style="color:#7adb8a">KURTARDIN!</h2>
-      <p class="pix-sub">Gölgehan yenildi, arkadaşını kurtardın!<br>Tüm 100 bölümü bitirdin. 🏆</p>
-      <p class="pix-sub" style="color:#ffd24d">Skor: <span id="end-score">0</span></p>
+      <h2 class="pix-title pop" style="color:#7adb8a">KURTARDIN!</h2>
+      <p class="pix-sub">GÖLGEHAN YENİLDİ, ARKADAŞINI KURTARDIN! 🏆</p>
+      <p class="pix-sub" style="color:#ffd24d">SKOR: <span id="end-score">0</span></p>
       <button id="end-menu" class="btn pix alt">ANA MENÜ</button>
     </div>
-    <div id="dev" class="overlay hidden">
-      <h2 class="pix-title" style="font-size:clamp(16px,4vw,24px)">🛠 TEST PANELİ</h2>
-      <p class="pix-sub">Seviye seç (1–100):</p>
-      <input id="dev-input" type="number" min="1" max="100" value="1" />
-      <button id="dev-go" class="btn pix">GİT</button>
-      <p class="pix-sub" style="font-size:8px">Hızlı git: <span id="dev-quick"></span></p>
-      <p class="pix-sub" style="font-size:8px;color:#9ad0ff">Oyun içinde &nbsp;[&nbsp; önceki &nbsp;·&nbsp; ]&nbsp; sonraki seviye</p>
-      <button id="dev-back" class="btn pix alt">‹ GERİ</button>
+    <div id="adv" class="overlay hidden">
+      <h2 class="pix-title" style="font-size:clamp(14px,3.5vw,22px)">REKLAM</h2>
+      <p class="pix-sub" id="adv-text">REKLAM YÜKLENİYOR…</p>
+    </div>
+    <div id="levels" class="overlay hidden">
+      <h2 class="pix-title" style="font-size:clamp(16px,4vw,24px)">BÖLÜMLER</h2>
+      <div id="levels-grid"></div>
+      <button id="levels-back" class="btn pix alt sm">‹ GERİ</button>
     </div>
     <div id="shop" class="overlay hidden">
-      <h2 class="pix-title" style="font-size:clamp(16px,4vw,26px)">DÜKKAN · 🪙 <span id="shop-coins">0</span></h2>
-      <div id="shop-list" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:90%"></div>
-      <button id="shop-back" class="btn pix alt">‹ GERİ</button>
+      <h2 class="pix-title" style="font-size:clamp(15px,3.6vw,22px)">DÜKKAN · 🪙 <span id="shop-coins">0</span></h2>
+      <div class="row2"><button id="tab-cos" class="shoptab on">KOSTÜM</button><button id="tab-up" class="shoptab">GÜÇLER</button></div>
+      <div id="shop-list"></div>
+      <button id="shop-back" class="btn pix alt sm">‹ GERİ</button>
     </div>
   </div>
 </div>
 <div id="touch">
   <button class="tbtn" id="t-left">◀</button>
   <button class="tbtn" id="t-right">▶</button>
-  <button class="tbtn" id="t-jump">▲</button>
+  <button class="tbtn jump" id="t-jump">▲</button>
 </div>
 
 <script>
@@ -141,8 +163,7 @@ function deathJingle(){ if(!actx)return; const t=actx.currentTime; [0,-2,-4,-7,-
 // ================= GİRDİ =================
 const keys={}; let jumpQueued=false, jumpHeld=false;
 addEventListener("keydown",e=>{ if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Space"].includes(e.code))e.preventDefault();
-  keys[e.code]=true; if(e.code==="Space"||e.code==="ArrowUp"){jumpQueued=true;jumpHeld=true;} if(e.code==="KeyR")startGame(); if(e.code==="KeyM")muted=!muted;
-  if(e.code==="BracketRight"&&typeof devJump==="function")devJump(1); if(e.code==="BracketLeft"&&typeof devJump==="function")devJump(-1); }); /* DEV: [ ] seviye atla */
+  keys[e.code]=true; if(e.code==="Space"||e.code==="ArrowUp"){jumpQueued=true;jumpHeld=true;} if(e.code==="KeyR")startGame(); if(e.code==="KeyM")muted=!muted; });
 addEventListener("keyup",e=>{ keys[e.code]=false; if(e.code==="Space"||e.code==="ArrowUp")jumpHeld=false; });
 
 // ================= FİZİK =================
@@ -181,12 +202,12 @@ let shake=0, bossOrbs=[];
 function mulberry32(a){ return function(){ a|=0;a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
 function mkEnemy(type,x,minx,maxx,yTop){
   const b={ type,x,minx,maxx,dead:0,phase:Math.random()*6,vy:0,onGround:true };
-  if(type==="walker") return {...b,y:yTop??GROUND_Y-32,w:32,h:32,vx:60,hp:1,col:"#c0392b"};
-  if(type==="runner") return {...b,y:yTop??GROUND_Y-28,w:30,h:28,vx:155,hp:1,col:"#e67e22"};
-  if(type==="hopper") return {...b,y:yTop??GROUND_Y-34,w:34,h:34,vx:85,hp:1,col:"#8e44ad",hopCd:Math.random()*1.5,gy:(yTop!=null?yTop:GROUND_Y-34)};
-  if(type==="tank")   return {...b,y:yTop??GROUND_Y-44,w:46,h:44,vx:50,hp:2,col:"#34352f"};
-  if(type==="flyer")  return {...b,y:GROUND_Y-150,w:34,h:24,vx:120,hp:1,col:"#1aa0a0",flyY:GROUND_Y-150,onGround:false};
-  return {...b,y:yTop??GROUND_Y-58,w:62,h:58,vx:42,hp:3,col:"#553a2a"}; // brute
+  if(type==="walker") return {...b,y:yTop??GROUND_Y-32,w:32,h:32,vx:60,hp:1,col:"#46c46a"};   // slime
+  if(type==="runner") return {...b,y:yTop??GROUND_Y-28,w:32,h:26,vx:155,hp:1,col:"#e67e22"};   // kertenkele
+  if(type==="hopper") return {...b,y:yTop??GROUND_Y-34,w:34,h:34,vx:85,hp:1,col:"#7a9a3a",hopCd:Math.random()*1.5,gy:(yTop!=null?yTop:GROUND_Y-34)}; // kurbağa
+  if(type==="tank")   return {...b,y:yTop??GROUND_Y-44,w:46,h:44,vx:50,hp:2,col:"#6a6258"};   // kaya golem
+  if(type==="flyer")  return {...b,y:GROUND_Y-150,w:32,h:24,vx:120,hp:1,col:"#5a3a7a",flyY:GROUND_Y-150,onGround:false}; // yarasa
+  return {...b,y:yTop??GROUND_Y-58,w:62,h:58,vx:42,hp:3,col:"#5e7a38"}; // dev/ogre
 }
 
 // ================= BUFF'LAR =================
@@ -283,42 +304,64 @@ function drawAmbient(){ if(!state||!state.amb)return; for(const a of state.amb){
 
 // ================= DURUM =================
 let state=null, phase="title", titleT=0, chaseT=0;
-const SAVE_KEY="zipzip_save";
+const SAVE_KEY="zipzip_save", MAX_KEY="zipzip_max";
 function loadSave(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)); }catch(e){ return null; } }
-function saveProgress(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({lvl:state.levelIdx, score:state.score})); }catch(e){} }
+function getMax(){ return (+localStorage.getItem(MAX_KEY))||0; }
+function saveProgress(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({lvl:state.levelIdx, score:state.score})); if(state.levelIdx>getMax())localStorage.setItem(MAX_KEY,state.levelIdx); }catch(e){} }
 function refreshContinue(){ const s=loadSave(), b=document.getElementById("btn-continue"); if(s && (s.lvl|0)>0){ b.textContent="DEVAM ET · B."+((s.lvl|0)+1); b.classList.remove("hidden"); } else b.classList.add("hidden"); }
-function showMenu(){ phase="menu"; document.getElementById("death").classList.add("hidden"); document.getElementById("ending").classList.add("hidden"); document.getElementById("shop").classList.add("hidden"); document.getElementById("touch").classList.remove("on"); overlay.classList.remove("hidden"); refreshContinue(); document.getElementById("menu-coins").textContent=getCoins(); }
+function hideOverlays(){ for(const id of ["death","ending","shop","levels","adv","overlay"]){ const e=document.getElementById(id); if(e)e.classList.add("hidden"); } }
+function showMenu(){ phase="menu"; hideOverlays(); document.getElementById("touch").classList.remove("on"); overlay.classList.remove("hidden"); refreshContinue(); document.getElementById("menu-coins").textContent=getCoins(); }
+// ---- kalıcı GÜÇLER (oyun içi buff'ların DIŞINDA, dükkandan alınır) ----
+const UPGRADES=[
+  {id:"startshield", name:"Başlangıç Kalkanı", price:200, desc:"Her bölüme 4sn kalkanla başla", icon:"🛡"},
+  {id:"doublecoin",  name:"Çift Coin",         price:300, desc:"Coinler 2 katı toplanır",     icon:"🪙"},
+  {id:"magnet",      name:"Daimi Mıknatıs",     price:350, desc:"Yakındaki coinler hep çekilir", icon:"🧲"},
+  {id:"doublejump",  name:"Daimi Çift Zıplama", price:400, desc:"Havada bir kez daha zıpla",    icon:"⤴"},
+];
+let shopTab="cos";
 function openShop(){ overlay.classList.add("hidden"); document.getElementById("shop").classList.remove("hidden"); renderShop(); }
 function renderShop(){ const shop=getShop(), coins=getCoins(); document.getElementById("shop-coins").textContent=coins;
+  document.getElementById("tab-cos").classList.toggle("on",shopTab==="cos"); document.getElementById("tab-up").classList.toggle("on",shopTab==="up");
   const list=document.getElementById("shop-list"); list.innerHTML="";
-  for(const c of COSTUMES){ const owned=shop.owned.includes(c.id), eq=shop.equip===c.id;
-    const d=document.createElement("div"); d.className="shop-item";
-    d.innerHTML='<div class="sw" style="background:'+c.shirt+';border-color:'+c.hat+'"></div><div class="nm">'+c.name+'</div>'+
-      '<div class="pr">'+(owned?"✓":("🪙"+c.price))+'</div>';
-    const b=document.createElement("button"); b.textContent= eq?"SEÇİLİ": owned?"SEÇ":"AL";
-    if(eq)b.className="equipped"; else if(!owned && coins<c.price)b.className="locked";
-    b.onclick=()=>{ const s=getShop(); if(s.owned.includes(c.id)){ s.equip=c.id; setShop(s); }
-      else if(getCoins()>=c.price){ addCoins(-c.price); s.owned.push(c.id); s.equip=c.id; setShop(s); sfx.buff(); } else { sfx.hurt(); return; }
-      renderShop(); };
-    d.appendChild(b); list.appendChild(d); }
+  if(shopTab==="cos"){
+    for(const c of COSTUMES){ const owned=shop.owned.includes(c.id), eq=shop.equip===c.id;
+      const d=document.createElement("div"); d.className="shop-item";
+      d.innerHTML='<div class="sw" style="background:'+c.shirt+';border-color:'+c.hat+'"></div><div class="nm">'+c.name+'</div><div class="pr">'+(owned?"✓":("🪙"+c.price))+'</div>';
+      const b=document.createElement("button"); b.textContent= eq?"SEÇİLİ": owned?"SEÇ":"AL"; if(eq)b.className="equipped"; else if(!owned&&coins<c.price)b.className="locked";
+      b.onclick=()=>{ const s=getShop(); if(s.owned.includes(c.id)){ s.equip=c.id; setShop(s); } else if(getCoins()>=c.price){ addCoins(-c.price); s.owned.push(c.id); s.equip=c.id; setShop(s); sfx.buff(); } else { sfx.hurt(); return; } renderShop(); };
+      d.appendChild(b); list.appendChild(d); }
+  } else {
+    const ups=getShop().upgrades||[];
+    for(const u of UPGRADES){ const owned=ups.includes(u.id);
+      const d=document.createElement("div"); d.className="shop-item";
+      d.innerHTML='<div class="sw" style="border:none;font-size:24px;display:flex;align-items:center;justify-content:center">'+u.icon+'</div><div class="nm">'+u.name+'<br><span style="color:#8a93a6;font-size:7px">'+u.desc+'</span></div><div class="pr">'+(owned?"✓ AÇIK":("🪙"+u.price))+'</div>';
+      const b=document.createElement("button"); b.textContent= owned?"ALINDI":"AL"; if(owned)b.className="equipped"; else if(coins<u.price)b.className="locked";
+      b.onclick=()=>{ const s=getShop(); s.upgrades=s.upgrades||[]; if(s.upgrades.includes(u.id))return; if(getCoins()>=u.price){ addCoins(-u.price); s.upgrades.push(u.id); setShop(s); sfx.buff(); renderShop(); } else sfx.hurt(); };
+      d.appendChild(b); list.appendChild(d); }
+  }
 }
-function startGame(fromSave){ initAudio(); startMusic(); mus.on=true;
-  document.getElementById("death").classList.add("hidden"); overlay.classList.add("hidden"); document.getElementById("touch").classList.add("on");
+// ---- bölüm seçim (oynadıkların açık, gerisi kilitli) ----
+function openLevels(){ overlay.classList.add("hidden"); document.getElementById("levels").classList.remove("hidden");
+  const g=document.getElementById("levels-grid"); g.innerHTML=""; const mx=getMax();
+  for(let i=0;i<LEVEL_COUNT;i++){ const unlocked=i<=mx, bossL=isBossLevel(i);
+    const c=document.createElement("div"); c.className="lvlcell"+(unlocked?"":" locked")+(bossL?" boss":"");
+    c.textContent=unlocked?(i+1):"🔒"; if(unlocked)c.onclick=()=>startAtLevel(i); g.appendChild(c); }
+}
+function startAtLevel(i){ initAudio(); startMusic(); mus.on=true; hideOverlays(); document.getElementById("touch").classList.add("on"); state={score:0,t:0,buffT:0,buffType:null,popups:[],deathT:0}; loadLevel(i); }
+function startGame(fromSave){ initAudio(); startMusic(); mus.on=true; hideOverlays(); document.getElementById("touch").classList.add("on");
   state={score:0,t:0,buffT:0,buffType:null,popups:[],deathT:0};
   const s=fromSave?loadSave():null; if(s){ state.score=s.score||0; loadLevel(s.lvl||0); } else loadLevel(0); }
-// --- DEV/TEST paneli (test bitince: bu blok + #dev overlay + #btn-dev + keydown'daki [ ] satırını sil) ---
-function startAt(n){ initAudio(); startMusic(); mus.on=true; document.getElementById("dev").classList.add("hidden"); document.getElementById("death").classList.add("hidden"); overlay.classList.add("hidden"); document.getElementById("touch").classList.add("on"); state={score:0,t:0,buffT:0,buffType:null,popups:[],deathT:0}; loadLevel(Math.max(0,Math.min(LEVEL_COUNT-1,n))); }
-function devJump(d){ if(!state||phase==="menu"||phase==="ending")return; loadLevel(Math.max(0,Math.min(LEVEL_COUNT-1,state.levelIdx+d)),true); titleT=0.6; phase="title"; }
-function openDev(){ overlay.classList.add("hidden"); document.getElementById("dev").classList.remove("hidden");
-  const q=document.getElementById("dev-quick"); if(q&&!q.dataset.f){ q.dataset.f="1"; [["Boss",13],["Orman",14],["Çöl",26],["Yer Altı",51],["Buz",64],["Ateş",76],["Final",100]].forEach(p=>{ const b=document.createElement("button"); b.textContent=p[0]; b.onclick=()=>startAt(p[1]-1); q.appendChild(b); }); } }
 function loadLevel(idx,keepScore){ const sc=keepScore?state.score:0;
   const L=buildLevel(idx); for(const b of L.boxes)L.platforms.push(b);
   if(!state)state={popups:[]}; state.score=sc;
   state.levelIdx=idx; state.level=L; state.biome=L.biome; state.platforms=L.platforms; state.boxes=L.boxes; state.movers=L.movers;
   state.coins=L.coins; state.spikes=L.spikes; state.enemies=L.enemies; state.villain=L.villain; state.chaseX=L.chaseX; state.width=L.width;
   state.amb=makeAmbient(L.biome.amb); state.costume=equippedCostume();
-  state.p={ x:70,y:GROUND_Y-38,w:32,h:42,vx:0,vy:0,onGround:true,coyote:0,face:1,invuln:0.6,walk:0,squash:0,blink:1,spin:0 };
+  const ups=getShop().upgrades||[]; state.up={ shield:ups.includes("startshield"), dcoin:ups.includes("doublecoin"), magnet:ups.includes("magnet"), djump:ups.includes("doublejump") };
+  state.p={ x:70,y:GROUND_Y-38,w:32,h:42,vx:0,vy:0,onGround:true,coyote:0,face:1,invuln:0.6,walk:0,squash:0,blink:1,spin:0,djAvail:true };
+  state.lastSafe={x:70,y:GROUND_Y-42};
   state.cam=0; state.particles=[]; state.buffT=0; state.buffType=null; state.popups=state.popups||[]; state.deathT=0;
+  if(state.up.shield){ state.buffType="shield"; state.buffT=4; }   // Başlangıç Kalkanı gücü
   phase="title"; titleT=1.7; chaseT=0; saveProgress();
 }
 function pHit(px,py,pw,ph,b){ return px<b.x+b.w && px+pw>b.x && py<b.y+b.h && py+ph>b.y; }
@@ -330,7 +373,9 @@ function grantBuff(type){ state.buffT=BUFF_DUR; state.buffType=type; if(type==="
 function breakShield(){ state.buffT=0; state.buffType=null; state.p.invuln=1.1; sfx.hurt(); burst(state.p.x+15,state.p.y+15,"#6ab0ff",18); popup("🛡 Kalkan kırıldı!","#6ab0ff"); }
 function activateBox(b){ if(b.used)return; b.used=true; b.bump=0.28; grantBuff(b.buff); }
 function nextLevel(){ loadLevel((state.levelIdx+1)%LEVEL_COUNT,true); }
-function die(){ if(phase!=="play"&&phase!=="boss")return; phase="dying"; state.deathT=0; state.p.vy=-520; state.p.spin=0; shake=0.5; mus.on=false; sfx.die(); deathJingle(); burst(state.p.x+15,state.p.y+15,"#ff5d5d",20); }
+function die(){ if(phase!=="play"&&phase!=="boss")return; const ls=state.lastSafe||{x:70,y:GROUND_Y-42};
+  state.deathSpot={x:ls.x, y:ls.y, boss:(phase==="boss")};
+  phase="dying"; state.deathT=0; state.p.vy=-520; state.p.spin=0; shake=0.5; mus.on=false; sfx.die(); deathJingle(); burst(state.p.x+15,state.p.y+15,"#ff5d5d",20); }
 function startBoss(){ phase="boss"; const band=Math.min(7,(state.levelIdx/12.5)|0);
   state.boss={ x:state.width-300, hp:3+band, maxhp:3+band, vx:50+band*5, atkCd:1.5, hurt:0, invuln:0.5, defeated:0 };
   state.bossCam=Math.max(0,state.width-W); bossOrbs=[]; sfx.laugh(); }
@@ -338,6 +383,15 @@ function showEnding(){ phase="ending"; document.getElementById("touch").classLis
   document.getElementById("end-score").textContent=state.score; document.getElementById("ending").classList.remove("hidden"); saveProgress(); }
 function showDeath(){ phase="dead"; document.getElementById("death-score").textContent=state.score; document.getElementById("death").classList.remove("hidden"); document.getElementById("touch").classList.remove("on"); }
 function restartLevel(){ document.getElementById("death").classList.add("hidden"); document.getElementById("touch").classList.add("on"); mus.on=true; loadLevel(state.levelIdx,true); }
+// REKLAM İZLE -> öldüğün yerden devam + 2sn dokunulmazlık
+function adContinue(){ const a=document.getElementById("adv"); document.getElementById("death").classList.add("hidden"); a.classList.remove("hidden"); playRewardedAd(()=>{ a.classList.add("hidden"); reviveAtSpot(); }); }
+function reviveAtSpot(){ const ds=state.deathSpot||{x:70,y:GROUND_Y-42,boss:false};
+  document.getElementById("touch").classList.add("on"); mus.on=true;
+  state.p.x=ds.x; state.p.y=ds.y; state.p.vx=0; state.p.vy=0; state.p.onGround=true; state.p.invuln=2.0; state.p.djAvail=true;  // 2 sn dokunulmaz
+  bossOrbs=[]; phase=ds.boss?"boss":"play"; }
+// Placeholder ödüllü reklam (yayında Capacitor AdMob ile değişecek). Şimdilik 2sn'lik simülasyon.
+function playRewardedAd(onReward){ const t=document.getElementById("adv-text"); let n=2; t.textContent="REKLAM… "+n;
+  const id=setInterval(()=>{ n--; if(n>0){ t.textContent="REKLAM… "+n; } else { clearInterval(id); onReward(); } },1000); }
 
 // ================= GÜNCELLE =================
 let buffer=0;
@@ -365,8 +419,8 @@ function update(dt){
     for(const b of state.platforms){ if(pHit(p.x,p.y,p.w,p.h,b)){ if(p.vy>0){p.y=b.y-p.h;p.vy=0;p.onGround=true;} } }
     if(p.x>state.width-50)nextLevel(); return; }
 
-  const speedB=state.buffType==="speed"&&state.buffT>0, mag=state.buffType==="magnet"&&state.buffT>0,
-        dj=state.buffType==="doublejump"&&state.buffT>0, sh=state.buffType==="shield"&&state.buffT>0;
+  const speedB=state.buffType==="speed"&&state.buffT>0, mag=(state.buffType==="magnet"&&state.buffT>0)||state.up.magnet,
+        dj=(state.buffType==="doublejump"&&state.buffT>0)||state.up.djump, sh=state.buffType==="shield"&&state.buffT>0;
   const spd=speedB?MAXVX*1.5:(grown?MAXVX*0.92:MAXVX), accel=speedB?MOVE*1.3:MOVE;
   const dir=(keys.ArrowRight?1:0)-(keys.ArrowLeft?1:0);
   if(dir){ p.vx+=dir*accel*dt; p.face=dir; } else { const f=FRICTION*dt; if(p.vx>0)p.vx=Math.max(0,p.vx-f); else p.vx=Math.min(0,p.vx+f); }
@@ -388,7 +442,7 @@ function update(dt){
   if(p.x<0)p.x=0;
   const wasAir=!p.onGround; p.y+=p.vy*dt; p.onGround=false;
   for(const b of state.platforms){ if(pHit(p.x,p.y,p.w,p.h,b)){
-    if(p.vy>0){ p.y=b.y-p.h; p.vy=0; p.onGround=true; p.coyote=COYOTE; if(wasAir)p.squash=1; if(b.kind==="box")activateBox(b); }
+    if(p.vy>0){ p.y=b.y-p.h; p.vy=0; p.onGround=true; p.coyote=COYOTE; if(wasAir)p.squash=1; if(b.kind==="box")activateBox(b); if(b.kind==="ground")state.lastSafe={x:Math.max(b.x+20,Math.min(p.x,b.x+b.w-40)),y:b.y-p.h}; }
     else if(p.vy<0){ p.y=b.y+b.h; p.vy=0; if(b.kind==="box")activateBox(b); } } }
   if(p.invuln>0)p.invuln-=dt;
 
@@ -441,7 +495,7 @@ function update(dt){
   }
   for(const c of state.coins){ if(c.got)continue;
     if(mag){ const dx=(p.x+p.w/2)-c.x, dy=(p.y+p.h/2)-c.y, dd=Math.hypot(dx,dy)||1; if(dd<180){ c.x+=dx/dd*280*dt; c.y+=dy/dd*280*dt; } }
-    if(pHit(p.x,p.y,p.w,p.h,{x:c.x-13,y:c.y-13,w:26,h:26})){ c.got=true; state.score+=c.special?50:10; addCoins(c.special?5:1); (c.special?sfx.special:sfx.coin)(); burst(c.x,c.y,c.special?"#ff7df0":"#ffe14d",c.special?14:8); if(c.special)popup("+50 ✨","#ff7df0"); } }
+    if(pHit(p.x,p.y,p.w,p.h,{x:c.x-13,y:c.y-13,w:26,h:26})){ c.got=true; state.score+=c.special?50:10; addCoins((c.special?5:1)*(state.up.dcoin?2:1)); (c.special?sfx.special:sfx.coin)(); burst(c.x,c.y,c.special?"#ff7df0":"#ffe14d",c.special?14:8); if(c.special)popup("+50 ✨","#ff7df0"); } }
   const target=phase==="boss"?state.bossCam:Math.max(0,Math.min(L.width-W,p.x+p.w/2-W/2)); state.cam+=(target-state.cam)*Math.min(1,dt*8);
 }
 
@@ -562,16 +616,47 @@ function drawBoss(){ const bo=state.boss; if(!bo)return;
   ctx.fillStyle="#a05cff"; ctx.shadowColor="#a05cff"; ctx.shadowBlur=12; ctx.beginPath(); ctx.arc(-28,-102,7,0,7); ctx.fill(); ctx.shadowBlur=0;
   ctx.globalAlpha=1; ctx.restore();
 }
-function drawEnemy(e){ const dead=e.dead>0; ctx.save(); ctx.translate(e.x+e.w/2,e.y+e.h);
-  if(dead){ ctx.globalAlpha=Math.max(0,e.dead/0.3); ctx.scale(1,0.4); } else if(e.type!=="flyer") ctx.rotate(Math.sin(e.phase)*0.08);
-  if(e.type==="flyer"){ ctx.fillStyle="rgba(180,255,255,0.6)"; const fl=Math.sin(e.phase*3)*8; ctx.beginPath(); ctx.ellipse(-e.w/2-2,-e.h/2,10,5+fl*0.3,-0.4,0,7); ctx.ellipse(e.w/2+2,-e.h/2,10,5+fl*0.3,0.4,0,7); ctx.fill(); }
-  ctx.fillStyle=e.col; roundRect(-e.w/2,-e.h,e.w,e.h,7); ctx.fill();
-  if(e.type==="runner"){ ctx.fillStyle="#ffd28a"; ctx.fillRect(-e.w/2,-e.h*0.5,e.w,3); }
-  if(e.type==="tank"||e.type==="brute"){ ctx.fillStyle="#1c1d18"; ctx.fillRect(-e.w/2+3,-e.h,e.w-6,7); }
-  if(e.type==="brute"){ ctx.fillStyle="#7a5a44"; for(let i=0;i<3;i++)ctx.fillRect(-e.w/2+8+i*16,-e.h*0.6,10,e.h*0.45); } // kaslar
-  ctx.fillStyle=shade(e.col,-0.25); const n=e.type==="tank"||e.type==="brute"?4:3;
-  for(let i=0;i<n;i++){ const bx=-e.w/2+5+i*(e.w-10)/n; ctx.beginPath(); ctx.moveTo(bx,-e.h); ctx.lineTo(bx+4,-e.h-8); ctx.lineTo(bx+8,-e.h); ctx.fill(); }
-  if(!dead){ const lx=e.vx>0?5:-11; ctx.fillStyle="#fff"; ctx.fillRect(lx,-e.h+12,7,7); ctx.fillStyle="#000"; ctx.fillRect(lx+(e.vx>0?2:0),-e.h+14,3,3); }
+function drawEnemy(e){ const dead=e.dead>0, fd=e.vx>0?1:-1, wob=Math.sin(e.phase), W2=e.w/2, hh=e.h, dk=shade(e.col,-0.22), lt=shade(e.col,0.2);
+  ctx.save(); ctx.translate(e.x+e.w/2, e.y+e.h);
+  if(dead){ ctx.globalAlpha=Math.max(0,e.dead/0.3); ctx.scale(1,0.35); }
+  if(e.type==="walker"){ // SLİME
+    const sq=hh*(1+wob*0.07); ctx.fillStyle=e.col; ctx.beginPath(); ctx.moveTo(-W2,0); ctx.bezierCurveTo(-W2,-sq,W2,-sq,W2,0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle="rgba(255,255,255,0.22)"; ctx.fillRect(-W2*0.45,-sq*0.72,4,4);
+    ctx.fillStyle="#fff"; ctx.fillRect(-7+fd*4,-sq*0.5,6,7); ctx.fillRect(3+fd*4,-sq*0.5,6,7);
+    ctx.fillStyle="#111"; ctx.fillRect(-5+fd*6,-sq*0.45,3,4); ctx.fillRect(5+fd*6,-sq*0.45,3,4); ctx.fillRect(-2+fd*4,-sq*0.24,8,2);
+  } else if(e.type==="runner"){ // KERTENKELE
+    ctx.fillStyle=e.col; ctx.fillRect(-W2,-hh*0.55,e.w,hh*0.45);
+    ctx.beginPath(); ctx.moveTo(-fd*W2,-hh*0.45); ctx.lineTo(-fd*(W2+13),-hh*0.12); ctx.lineTo(-fd*W2,-hh*0.05); ctx.fill();
+    ctx.fillRect(fd*(W2-7),-hh*0.7,11,15);
+    ctx.fillStyle=dk; const ls=Math.sin(e.phase*3)*3; ctx.fillRect(-W2+3,-6,5,6+ls); ctx.fillRect(W2-9,-6,5,6-ls);
+    ctx.fillStyle="#ffd28a"; ctx.fillRect(-W2,-hh*0.55,e.w,2);
+    ctx.fillStyle="#fff"; ctx.fillRect(fd*(W2-1)-(fd>0?0:3),-hh*0.62,4,4); ctx.fillStyle="#111"; ctx.fillRect(fd*(W2-1)-(fd>0?-1:2),-hh*0.6,2,2);
+  } else if(e.type==="hopper"){ // KURBAĞA
+    ctx.fillStyle=e.col; ctx.beginPath(); ctx.ellipse(0,-hh*0.32,W2,hh*0.42,0,Math.PI,0); ctx.fill(); ctx.fillRect(-W2,-hh*0.32,e.w,hh*0.32);
+    ctx.fillStyle=dk; ctx.fillRect(-W2,-7,6,7); ctx.fillRect(W2-6,-7,6,7);
+    ctx.fillStyle="#fff"; ctx.fillRect(-W2*0.55,-hh*0.72,7,7); ctx.fillRect(W2*0.55-7,-hh*0.72,7,7);
+    ctx.fillStyle="#111"; ctx.fillRect(-W2*0.55+(fd>0?3:1),-hh*0.7,3,4); ctx.fillRect(W2*0.55-7+(fd>0?3:1),-hh*0.7,3,4);
+    ctx.fillStyle=dk; ctx.fillRect(-W2*0.5,-hh*0.16,W2,2);
+  } else if(e.type==="flyer"){ // YARASA
+    const fl=Math.sin(e.phase*4)*0.5; ctx.fillStyle=e.col;
+    ctx.save(); ctx.translate(-W2,-hh*0.55); ctx.rotate(-0.4-fl); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-15,-5); ctx.lineTo(-12,7); ctx.lineTo(0,9); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.translate(W2,-hh*0.55); ctx.rotate(0.4+fl); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(15,-5); ctx.lineTo(12,7); ctx.lineTo(0,9); ctx.fill(); ctx.restore();
+    ctx.fillStyle=e.col; roundRect(-W2*0.55,-hh,W2*1.1,hh,5); ctx.fill();
+    ctx.fillStyle="#1a1224"; ctx.beginPath(); ctx.moveTo(-W2*0.5,-hh); ctx.lineTo(-W2*0.2,-hh-7); ctx.lineTo(0,-hh); ctx.lineTo(W2*0.2,-hh-7); ctx.lineTo(W2*0.5,-hh); ctx.fill();
+    ctx.fillStyle="#ff4"; ctx.fillRect(-6+fd*2,-hh*0.6,4,4); ctx.fillRect(2+fd*2,-hh*0.6,4,4);
+    ctx.fillStyle="#fff"; ctx.fillRect(-3,-hh*0.28,2,3); ctx.fillRect(2,-hh*0.28,2,3);
+  } else if(e.type==="tank"){ // KAYA GOLEM
+    ctx.fillStyle=e.col; roundRect(-W2,-hh,e.w,hh,4); ctx.fill();
+    ctx.fillStyle=dk; for(let i=0;i<3;i++)ctx.fillRect(-W2+6+i*((e.w-12)/3),-hh*0.6,(e.w-16)/3,hh*0.42);
+    ctx.fillStyle=lt; ctx.fillRect(-W2+4,-hh+4,e.w-8,5);
+    ctx.fillStyle="#ff7a3a"; ctx.shadowColor="#ff7a3a"; ctx.shadowBlur=5; ctx.fillRect(-8+fd*3,-hh*0.5,5,4); ctx.fillRect(4+fd*3,-hh*0.5,5,4); ctx.shadowBlur=0;
+  } else { // BRUTE = DEV/OGRE
+    ctx.fillStyle=e.col; roundRect(-W2,-hh,e.w,hh,6); ctx.fill();
+    ctx.fillStyle=lt; ctx.fillRect(-W2+4,-hh*0.62,9,hh*0.5); ctx.fillRect(W2-13,-hh*0.62,9,hh*0.5);
+    ctx.fillStyle="#fff"; ctx.fillRect(-W2*0.4,-hh*0.16,5,9); ctx.fillRect(W2*0.4-5,-hh*0.16,5,9);
+    ctx.fillStyle="#fff"; ctx.fillRect(-10+fd*3,-hh*0.72,7,7); ctx.fillRect(4+fd*3,-hh*0.72,7,7);
+    ctx.fillStyle="#c00"; ctx.fillRect(-8+fd*5,-hh*0.68,3,4); ctx.fillRect(6+fd*5,-hh*0.68,3,4);
+  }
   ctx.restore(); }
 
 // ---- KAHRAMAN: kaslı + şapkalı adam, belirgin animasyon ----
@@ -691,10 +776,14 @@ document.getElementById("death-retry").addEventListener("click",restartLevel);
 document.getElementById("death-menu").addEventListener("click",showMenu);
 document.getElementById("end-menu").addEventListener("click",showMenu);
 document.getElementById("menu-coins").textContent=getCoins();
-// DEV paneli bağlama (test sonrası kaldır)
-document.getElementById("btn-dev").addEventListener("click",openDev);
-document.getElementById("dev-go").addEventListener("click",()=>startAt(((+document.getElementById("dev-input").value)||1)-1));
-document.getElementById("dev-back").addEventListener("click",showMenu);
+// bölüm seçim
+document.getElementById("btn-levels").addEventListener("click",openLevels);
+document.getElementById("levels-back").addEventListener("click",showMenu);
+// dükkan sekmeleri
+document.getElementById("tab-cos").addEventListener("click",()=>{shopTab="cos";renderShop();});
+document.getElementById("tab-up").addEventListener("click",()=>{shopTab="up";renderShop();});
+// reklam izle -> devam
+document.getElementById("death-ad").addEventListener("click",adContinue);
 // dokunmatik kontroller (mobil)
 function bindTouch(id,on,off){ const el=document.getElementById(id); if(!el)return;
   const d=e=>{ e.preventDefault(); on(); }, u=e=>{ e.preventDefault(); off(); };
