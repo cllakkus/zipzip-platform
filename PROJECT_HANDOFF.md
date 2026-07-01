@@ -1,7 +1,7 @@
 # PROJECT_HANDOFF.md — ZIPZIP Devir Teslim Belgesi
 
 > Bu belge, yeni bir sohbette çalışmaya kesintisiz devam edebilmek için hazırlandı.
-> Son güncelleme: 2026-06-30 · Son commit: `a022917` (yerel = GitHub, push edilmiş durumda)
+> Son güncelleme: 2026-07-01 · Hata #1 çözüldü (§8); yerel commit atıldı, kullanıcının GitHub Desktop'tan **Push** etmesi bekleniyor.
 > Kod tabanı incelenerek doğrulanmıştır; sadece konuşma özeti değildir.
 
 ---
@@ -58,7 +58,7 @@ Hikâye: Kötü **Gölgehan** kızı kaçırdı; oyuncu 100 bölüm boyunca peş
 
 ## 3. Henüz Tamamlanmayan İşler
 
-1. **"Reklam izle → 20. seviye" hatası** — bildirildi, ÇÖZÜLMEDİ (bkz. §8, ilk iş).
+1. ~~"Reklam izle → 20. seviye" hatası~~ — **ÇÖZÜLDÜ (2026-07-01)**, bkz. §8 #1 (bayat kayıt; sıfırlama butonu + guard + KeyR düzeltmesi eklendi).
 2. **Gerçek ödüllü reklam (AdMob)**: `playRewardedAd()` şu an 2 sn'lik sahte geri sayım. App Store için **Capacitor AdMob eklentisi** (`@capacitor-community/admob`) + AdMob hesabı + iOS `ATT` (App Tracking Transparency) izni gerekecek. Fonksiyon tek noktadan değiştirilecek şekilde tasarlandı.
 3. **Apple imzalama**: kullanıcı Apple Developer hesabı ($99/yıl) açacak → Codemagic **Code signing (iOS)** bağlanacak → `codemagic.yaml`'daki "AŞAMA 2" bloğu imzalı archive+export'a çevrilecek → TestFlight.
 4. **Fontların yerelleştirilmesi**: Google Fonts CDN'den geliyor; **çevrimdışı/native pakette bozulur**. Yayından önce woff2 dosyaları indirilip `@font-face` ile yerel gömülmeli.
@@ -130,12 +130,13 @@ C:\Users\cllak\OneDrive\Desktop\zipzip-platform\   ← PROJE KÖKÜ (git repo, d
 
 ## 8. Bilinen Hatalar
 
-### 🔴 #1 (AÇIK, İLK İŞ): "REKLAM İZLE & DEVAM" → 20. seviyeye atıyor
-- Kullanıcı bildirimi; ben yeniden üretemeden oturum kesildi.
-- **Kod okumasına göre** `adContinue→playRewardedAd→reviveAtSpot` zinciri `state.levelIdx`'e HİÇ dokunmuyor; seviye değiştirebilen tek yollar: `startGame(true)` (kayıttan), `startAtLevel`, `nextLevel`, `restartLevel`.
-- **En güçlü hipotez:** Kaldırılan test paneli döneminde `startAt()` → `loadLevel()` → `saveProgress()` zinciri kullanıcının `zipzip_save`'ine **lvl≈19 yazdı** (test paneli seviye atlarken kaydı da güncelliyordu — doğrulanmış yan etki). Kullanıcının tarayıcısında bu bayat kayıt + muhtemelen bayat önbellek (eski HTML) birleşince "20. seviyeye atma" görüntüsü oluşuyor olabilir.
-- **Yapılacak:** (1) Kullanıcıdan Ctrl+F5 + DevTools'suz basit yolla localStorage temizletme (oyuna geçici "kayıtları sıfırla" butonu eklemek en kolayı) → yeniden dene. (2) Hâlâ oluyorsa `adContinue`/`reviveAtSpot`'a geçici log ekleyip repro al. (3) Kalıcı önlem: `reviveAtSpot` başına `if(!state||!state.level) return restartLevel();` guard'ı + kayda yazmayı sadece gerçek oynanışta yapmak.
-- İlgili risk: `keydown "KeyR" → startGame()` her an tam sıfırlama yapıyor (menüde/ölümde dahil). Yayın öncesi kaldırılmalı veya sadece `phase==="play"` iken çalışmalı.
+### ✅ #1 (ÇÖZÜLDÜ, 2026-07-01): "REKLAM İZLE & DEVAM" → 20. seviyeye atıyor
+- **Kök neden doğrulandı:** Reklam-devam kod yolunda hata YOK. Canlı test (geçici `__dbg` kancasıyla `die→adContinue→2sn reklam→reviveAtSpot` adımlandı): `state.levelIdx` zincir boyunca **hiç değişmedi** (0→0). Kullanıcının gördüğü "20. seviye", tarayıcısındaki **bayat `zipzip_save` (lvl:19)** kaydından geliyordu — canlı repro edildi: lvl:19 kaydıyla menüde **"DEVAM ET · B.20"** çıkıyor; kullanıcı reklam akışından sonra menüye dönüp bu butona basınca 20. bölüme gidiyordu. Muhtemel kaynak: kaldırılan test panelinin `saveProgress()` yan etkisi + bayat önbellek.
+- **Uygulanan düzeltmeler (index.html, commit sonrası):**
+  1. **Menüye "İLERLEMEYİ SIFIRLA" butonu** (`btn-reset`→`resetProgress()`, `confirm()` onaylı): `zipzip_save`+`zipzip_max` siler, coin/kostüm korunur. Kullanıcı bayat kaydı kod bilmeden temizleyebilir. Canlı test: kayıt+max temizlendi, DEVAM ET gizlendi, coin korundu.
+  2. **`reviveAtSpot` guard'ı:** `if(!state||!state.level){ showMenu(); return; }` — geçersiz durumda hata/atlama yerine menüye döner. Canlı test: state=null iken hatasız menüye döndü.
+  3. **`KeyR` düzeltildi:** artık her yerde `startGame()` (tam sıfırlama) değil, sadece `phase==="play"||"boss"` iken `restartLevel()` (mevcut bölümü baştan). Yanlışlıkla 1. bölüme atma footgun'ı kalktı.
+- **Kullanıcı adımı:** Ctrl+F5 ile yenile → hâlâ 20'deyse menüde **İLERLEMEYİ SIFIRLA**'ya bas → onayla → 1. bölümden başla.
 
 ### 🟡 #2: Yerel `www/index.html` bayat (29 Haziran)
 `npm run copy` çalıştırılmadı. **Codemagic etkilenmez** (build sırasında kendisi kopyalıyor) ama yerelde kafa karıştırır. Düzeltme: `Copy-Item index.html www\index.html` (veya npm run copy).
@@ -176,6 +177,6 @@ Arka plan sekmesinde `requestAnimationFrame` donar → `preview_screenshot` HEP 
 ## 11. Yeni Sohbette İLK ADIM
 
 1. **`node tools/serve.js`** ile sunucuyu başlat (http://localhost:4322), oyunun açıldığını doğrula.
-2. **Hata #1'i çöz** (§8): önce kullanıcının localStorage'ındaki bayat `zipzip_save`'i sıfırlatacak güvenli bir yol ekle/uygula, repro almaya çalış, `reviveAtSpot`'a guard ekle, `KeyR` sıfırlamasını yayına uygun hale getir.
-3. `npm run copy` (veya dosya kopyası) ile `www/`'yi tazele; `tools/serve.js` + `PROJECT_HANDOFF.md` + düzeltmeleri commit'le → kullanıcıya **GitHub Desktop'tan Push** yaptır → Codemagic'te yeşil build teyidi.
+2. ~~Hata #1'i çöz~~ — **TAMAM (2026-07-01)**, bkz. §8 #1. Kalan: kullanıcı Ctrl+F5 → gerekiyorsa İLERLEMEYİ SIFIRLA ile teyit.
+3. **Kullanıcı GitHub Desktop'tan Push etsin** (yerel commit hazır) → Codemagic'te yeşil build teyidi. (`www/` gitignored; Codemagic build sırasında kendi kopyalar.)
 4. Sonraki sıra: Apple Developer hesabı geldiyse Codemagic Code signing + imzalı .ipa; gelmediyse font yerelleştirme / AdMob hazırlığı.

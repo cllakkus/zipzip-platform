@@ -84,6 +84,7 @@
         <button id="btn-levels" class="btn pix sm">BÖLÜMLER</button>
         <button id="btn-shop" class="btn pix sm">🪙 DÜKKAN</button>
       </div>
+      <button id="btn-reset" class="btn pix sm alt" style="margin-top:14px;font-size:7px;opacity:.7">İLERLEMEYİ SIFIRLA</button>
     </div>
     <div id="death" class="overlay death hidden">
       <h2 class="pix-title">YAKALANDIN!</h2>
@@ -163,7 +164,7 @@ function deathJingle(){ if(!actx)return; const t=actx.currentTime; [0,-2,-4,-7,-
 // ================= GİRDİ =================
 const keys={}; let jumpQueued=false, jumpHeld=false;
 addEventListener("keydown",e=>{ if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Space"].includes(e.code))e.preventDefault();
-  keys[e.code]=true; if(e.code==="Space"||e.code==="ArrowUp"){jumpQueued=true;jumpHeld=true;} if(e.code==="KeyR")startGame(); if(e.code==="KeyM")muted=!muted; });
+  keys[e.code]=true; if(e.code==="Space"||e.code==="ArrowUp"){jumpQueued=true;jumpHeld=true;} if(e.code==="KeyR"&&(phase==="play"||phase==="boss")&&state)restartLevel(); if(e.code==="KeyM")muted=!muted; });
 addEventListener("keyup",e=>{ keys[e.code]=false; if(e.code==="Space"||e.code==="ArrowUp")jumpHeld=false; });
 
 // ================= FİZİK =================
@@ -309,6 +310,7 @@ function loadSave(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)); }ca
 function getMax(){ return (+localStorage.getItem(MAX_KEY))||0; }
 function saveProgress(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({lvl:state.levelIdx, score:state.score})); if(state.levelIdx>getMax())localStorage.setItem(MAX_KEY,state.levelIdx); }catch(e){} }
 function refreshContinue(){ const s=loadSave(), b=document.getElementById("btn-continue"); if(s && (s.lvl|0)>0){ b.textContent="DEVAM ET · B."+((s.lvl|0)+1); b.classList.remove("hidden"); } else b.classList.add("hidden"); }
+function resetProgress(){ if(!confirm("İlerlemen 1. bölüme sıfırlansın mı? (Coin ve kostümler korunur)"))return; try{ localStorage.removeItem(SAVE_KEY); localStorage.removeItem(MAX_KEY); }catch(e){} refreshContinue(); }
 function hideOverlays(){ for(const id of ["death","ending","shop","levels","adv","overlay"]){ const e=document.getElementById(id); if(e)e.classList.add("hidden"); } }
 function showMenu(){ phase="menu"; hideOverlays(); document.getElementById("touch").classList.remove("on"); overlay.classList.remove("hidden"); refreshContinue(); document.getElementById("menu-coins").textContent=getCoins(); }
 // ---- kalıcı GÜÇLER (oyun içi buff'ların DIŞINDA, dükkandan alınır) ----
@@ -385,7 +387,7 @@ function showDeath(){ phase="dead"; document.getElementById("death-score").textC
 function restartLevel(){ document.getElementById("death").classList.add("hidden"); document.getElementById("touch").classList.add("on"); mus.on=true; loadLevel(state.levelIdx,true); }
 // REKLAM İZLE -> öldüğün yerden devam + 2sn dokunulmazlık
 function adContinue(){ const a=document.getElementById("adv"); document.getElementById("death").classList.add("hidden"); a.classList.remove("hidden"); playRewardedAd(()=>{ a.classList.add("hidden"); reviveAtSpot(); }); }
-function reviveAtSpot(){ const ds=state.deathSpot||{x:70,y:GROUND_Y-42,boss:false};
+function reviveAtSpot(){ if(!state||!state.level){ showMenu(); return; } const ds=state.deathSpot||{x:70,y:GROUND_Y-42,boss:false};
   document.getElementById("touch").classList.add("on"); mus.on=true;
   state.p.x=ds.x; state.p.y=ds.y; state.p.vx=0; state.p.vy=0; state.p.onGround=true; state.p.invuln=2.0; state.p.djAvail=true;  // 2 sn dokunulmaz
   bossOrbs=[]; phase=ds.boss?"boss":"play"; }
@@ -778,6 +780,7 @@ document.getElementById("end-menu").addEventListener("click",showMenu);
 document.getElementById("menu-coins").textContent=getCoins();
 // bölüm seçim
 document.getElementById("btn-levels").addEventListener("click",openLevels);
+document.getElementById("btn-reset").addEventListener("click",resetProgress);
 document.getElementById("levels-back").addEventListener("click",showMenu);
 // dükkan sekmeleri
 document.getElementById("tab-cos").addEventListener("click",()=>{shopTab="cos";renderShop();});
