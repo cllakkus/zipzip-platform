@@ -9,7 +9,9 @@
     "add:android": "npm run copy && npx cap add android",
     "open:android": "npx cap open android",
     "add:ios": "npm run copy && npx cap add ios",
-    "open:ios": "npx cap open ios"
+    "open:ios": "npx cap open ios",
+    "gen:assets": "node tools/gen-assets.js",
+    "assets": "npx @capacitor/assets generate"
   },
   "dependencies": {
     "@capacitor/core": "^6.1.0",

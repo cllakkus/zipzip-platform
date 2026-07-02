@@ -1,8 +1,30 @@
 # PROJECT_HANDOFF.md — ZIPZIP Devir Teslim Belgesi
 
 > Bu belge, yeni bir sohbette çalışmaya kesintisiz devam edebilmek için hazırlandı.
-> Son güncelleme: 2026-07-01 · Hata #1 çözüldü (§8); yerel commit atıldı, kullanıcının GitHub Desktop'tan **Push** etmesi bekleniyor.
+> Son güncelleme: 2026-07-02 · Yerel commit'ler push BEKLİYOR (kullanıcı GitHub Desktop'tan push edecek).
 > Kod tabanı incelenerek doğrulanmıştır; sadece konuşma özeti değildir.
+>
+> **GÜNCEL DURUM ÖZETİ (2026-07-02):** Oyun YAYINA HAZIR duruma getirildi:
+> - Hata #1 (reklam→20. seviye) ÇÖZÜLDÜ: bayat kayıt kaynaklıydı; `reviveAtSpot` guard'ı +
+>   menüye "İLERLEMEYİ SIFIRLA" butonu eklendi; KeyR artık sadece oyun içinde bölümü yeniler.
+> - Görsel şölen: "CREATED BY CELAL AKKUS" introsu (her açılışta), gamepad görünümlü dokunmatik
+>   butonlar, güneş/vinyet/gölgeler/toz efektleri, buff şok dalgaları (`fxRings`), HUD coin sayacı.
+> - İçerik: korkunç Gölgehan + belirgin kız (İMDAT balonu), 6 canavar yeniden tasarımı,
+>   11 kostüm + 4 farklı karakter (cape/pirate/robot/wizard), biyom-kartlı BÖLÜMLER ekranı,
+>   3 yeni chunk (coinArc/spikeBridge/ruins), GÜÇLER fiyatları 350/600/750/1000.
+> - YAYIN HAZIRLIĞI: Fontlar base64 GÖMÜLDÜ (CDN kaldırıldı; offline/native çalışır; index ~168KB),
+>   safe-area (çentik) desteği, dikey tutuşta "TELEFONU YAN ÇEVİR" uyarısı, mobil ses (🔊) butonu,
+>   `resources/icon.png` (1024) + `resources/splash.png` (2732) — `npm run gen:assets` ile
+>   `tools/gen-assets.js` üretir, `PRIVACY.md` (TR+EN gizlilik politikası taslağı).
+> - DOĞRULAMA: 100 bölüm geçilebilirlik taraması GEÇTİ (köprüsüz boşluk ≤118, duvar ≤90,
+>   diken ≤106); boss'ta ölüp reklamla dönüş TEST EDİLDİ (boss HP korunuyor, seviye değişmiyor);
+>   10 seviyede rastgele girdiyle hata taraması temiz; harici font isteği 0 doğrulandı.
+> - KALAN İŞ (yayın için): (1) kullanıcı push + Codemagic yeşil build teyidi, (2) Apple
+>   Developer hesabı → Code signing → imzalı .ipa/TestFlight, (3) AdMob entegrasyonu
+>   (placeholder tek noktadan değişecek), (4) App Store meta: ekran görüntüleri + PRIVACY.md'nin
+>   bir URL'de yayınlanması (GitHub Pages önerilir), (5) imzalı build aşamasında
+>   `npx @capacitor/assets generate` adımı codemagic.yaml'a eklenecek (çalışan imzasız
+>   pipeline bilerek değiştirilmedi).
 
 ---
 
