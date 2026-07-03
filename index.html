@@ -116,18 +116,18 @@
   .shoptab { font-family:var(--pix); font-size:9px; padding:9px 14px; border:none; cursor:pointer; background:#2a3650; color:#9aa6bd; }
   .shoptab.on { background:#ffc23a; color:#3a2a04; }
   #shop-list { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:94%; max-height:46vh; overflow:auto; padding:4px; }
-  /* bölüm seçim ızgarası — büyük, biyom görünümlü kartlar */
-  #levels-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:9px; width:94%; max-height:58vh; overflow:auto; padding:8px; }
-  .lvlcell { font-family:var(--pix); width:100%; aspect-ratio:1; position:relative; display:flex; align-items:center; justify-content:center; cursor:pointer;
-    border-radius:8px; border:2px solid rgba(0,0,0,.4); box-shadow:0 3px 0 rgba(0,0,0,.35), inset 0 2px 3px rgba(255,255,255,.22); transition:.09s; overflow:hidden; }
-  .lvlcell:hover { transform:scale(1.09); }
-  .lvlcell .lvlico { font-size:clamp(18px,4.5vw,26px); text-shadow:0 2px 3px rgba(0,0,0,.4); }
-  .lvlcell .lvlnum { position:absolute; right:4px; bottom:3px; font-size:8px; color:#fff; text-shadow:1px 1px 0 rgba(0,0,0,.7); }
-  .lvlcell.locked { background:linear-gradient(180deg,#131829,#0d1120) !important; cursor:not-allowed; border-color:#1a2030; box-shadow:none; }
-  .lvlcell.locked .lvlico { opacity:.28; filter:grayscale(1); }
-  .lvlcell.locked .lvlnum { color:#3a4458; }
-  .lvlcell.boss:not(.locked) { border-color:#ff4d5e; box-shadow:0 3px 0 rgba(0,0,0,.35), 0 0 10px rgba(255,77,94,.45), inset 0 2px 3px rgba(255,255,255,.22); }
-  .lvlcell.cur { outline:3px solid #ffd24d; animation:glow 1.1s ease-in-out infinite; }
+  /* bölüm seçim ızgarası — canvas minyatürlü kartlar (emoji YOK: her cihazda aynı görünür) */
+  #levels-grid { display:grid; grid-template-columns:repeat(auto-fill,76px); grid-auto-rows:76px; gap:10px;
+    justify-content:center; width:94%; max-height:56vh; overflow-y:auto; overflow-x:hidden; padding:10px; flex:none; }
+  .lvlcell { font-family:var(--pix); position:relative; cursor:pointer; background:#131829;
+    border-radius:8px; border:2px solid #2e3a56; box-shadow:0 3px 0 rgba(0,0,0,.4); transition:.09s; overflow:hidden; }
+  .lvlcell:hover { transform:scale(1.08); }
+  .lvlcell canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .lvlcell .lvlnum { position:absolute; right:4px; bottom:3px; font-size:9px; color:#fff; text-shadow:1px 1px 0 rgba(0,0,0,.85); }
+  .lvlcell.locked { cursor:not-allowed; border-color:#232c44; }
+  .lvlcell.locked .lvlnum { color:#9aa6bd; }
+  .lvlcell.boss:not(.locked) { border-color:#ff4d5e; box-shadow:0 3px 0 rgba(0,0,0,.4), 0 0 10px rgba(255,77,94,.45); }
+  .lvlcell.cur { outline:3px solid #ffd24d; outline-offset:1px; animation:glow 1.1s ease-in-out infinite; }
   /* mobil/dokunmatik cihazda klavye ipucu satırını gizle */
   @media (pointer:coarse) { .hint { display:none; } }
   /* mobil ses düğmesi (dokunmatik kontrollerle birlikte görünür) */
@@ -447,16 +447,37 @@ function renderShop(){ const shop=getShop(), coins=getCoins(); document.getEleme
 // ---- bölüm seçim (oynadıkların açık, gerisi kilitli) ----
 function openLevels(){ overlay.classList.add("hidden"); document.getElementById("levels").classList.remove("hidden");
   const g=document.getElementById("levels-grid"); g.innerHTML=""; const mx=getMax();
-  const BICON=["🌳","🌲","🌵","🏚","💎","⛄","🔥","🌋"];   // biyom simgeleri (kart görseli)
-  for(let i=0;i<LEVEL_COUNT;i++){ const unlocked=i<=mx, bossL=isBossLevel(i), bio=biomeFor(i), bidx=BIOMES.indexOf(bio);
+  for(let i=0;i<LEVEL_COUNT;i++){ const unlocked=i<=mx, bossL=isBossLevel(i);
     const c=document.createElement("div"); c.className="lvlcell"+(unlocked?"":" locked")+(bossL?" boss":"")+(unlocked&&i===mx?" cur":"");
-    if(unlocked){ // açık bölüm: biyomun gökyüzü+zemin manzarası
-      c.style.background="linear-gradient(180deg,"+bio.sky[0]+" 0%,"+bio.sky[1]+" 54%,"+bio.top+" 54%,"+bio.ground+" 100%)";
-      c.innerHTML='<span class="lvlico">'+(bossL?"👹":BICON[bidx])+'</span><span class="lvlnum">'+(i+1)+'</span>';
-      c.onclick=()=>startAtLevel(i);
-    } else { // kilitli bölüm: soyut karanlık silüet
-      c.innerHTML='<span class="lvlico">'+(bossL?"👹":BICON[bidx])+'</span><span class="lvlnum">'+(i+1)+'</span>'; }
+    const cv=document.createElement("canvas"); cv.width=96; cv.height=96; drawLevelThumb(cv,i,unlocked,bossL); c.appendChild(cv);
+    const n=document.createElement("span"); n.className="lvlnum"; n.textContent=i+1; c.appendChild(n);
+    if(unlocked)c.onclick=()=>startAtLevel(i);
     g.appendChild(c); }
+}
+// bölüm kartı minyatürü: biyom manzarası ÇİZİMİ (emoji yok — her cihazda birebir aynı görünür)
+function drawLevelThumb(cv,i,unlocked,bossL){ const bio=biomeFor(i), g=cv.getContext("2d"), w=cv.width, h=cv.height;
+  const sk=g.createLinearGradient(0,0,0,h); sk.addColorStop(0,bio.sky[0]); sk.addColorStop(1,bio.sky[1]);
+  g.fillStyle=sk; g.fillRect(0,0,w,h);
+  g.fillStyle="rgba(255,244,200,0.9)"; g.beginPath(); g.arc(w*0.82,h*0.20,w*0.09,0,7); g.fill(); // güneş/ay
+  g.fillStyle=bio.mtn; g.beginPath(); g.moveTo(w*0.04,h*0.74); g.lineTo(w*0.34,h*0.26); g.lineTo(w*0.64,h*0.74); g.closePath(); g.fill(); // dağ
+  g.fillStyle=bio.hill; g.beginPath(); g.ellipse(w*0.78,h*0.76,w*0.42,h*0.26,0,Math.PI,0); g.fill(); // tepe
+  g.fillStyle=bio.top; g.fillRect(0,h*0.74,w,h*0.09); g.fillStyle=bio.ground; g.fillRect(0,h*0.83,w,h*0.17); // zemin
+  if(bossL){ // Gölgehan silüeti: gövde + kukuleta + boynuzlar + kızıl gözler
+    const bx=w*0.5, by=h*0.83; g.fillStyle="rgba(18,10,32,0.95)";
+    g.fillRect(bx-w*0.10,by-h*0.30,w*0.20,h*0.30);
+    g.beginPath(); g.moveTo(bx-w*0.14,by-h*0.28); g.lineTo(bx,by-h*0.52); g.lineTo(bx+w*0.14,by-h*0.28); g.closePath(); g.fill();
+    g.beginPath(); g.moveTo(bx-w*0.08,by-h*0.44); g.lineTo(bx-w*0.19,by-h*0.60); g.lineTo(bx-w*0.03,by-h*0.48); g.closePath(); g.fill();
+    g.beginPath(); g.moveTo(bx+w*0.08,by-h*0.44); g.lineTo(bx+w*0.19,by-h*0.60); g.lineTo(bx+w*0.03,by-h*0.48); g.closePath(); g.fill();
+    g.fillStyle="#ff2030"; g.fillRect(bx-w*0.065,by-h*0.40,w*0.05,h*0.04); g.fillRect(bx+w*0.02,by-h*0.40,w*0.05,h*0.04);
+  }
+  if(!unlocked){ // karartma + çizilmiş asma kilit
+    g.fillStyle="rgba(7,10,18,0.74)"; g.fillRect(0,0,w,h);
+    const lx=w*0.5, ly=h*0.46, bw=w*0.32, bh=h*0.26;
+    g.strokeStyle="#9aa6bd"; g.lineWidth=w*0.055;
+    g.beginPath(); g.arc(lx,ly,bw*0.34,Math.PI,0); g.stroke();          // kulp
+    g.fillStyle="#9aa6bd"; g.fillRect(lx-bw/2,ly,bw,bh);                 // gövde
+    g.fillStyle="#232c44"; g.fillRect(lx-w*0.035,ly+bh*0.28,w*0.07,bh*0.42); // anahtar deliği
+  }
 }
 function startAtLevel(i){ initAudio(); startMusic(); mus.on=true; hideOverlays(); document.getElementById("touch").classList.add("on"); state={score:0,t:0,buffT:0,buffType:null,popups:[],deathT:0}; loadLevel(i); }
 function startGame(fromSave){ initAudio(); startMusic(); mus.on=true; hideOverlays(); document.getElementById("touch").classList.add("on");
