@@ -6,7 +6,7 @@ workflows:
     max_build_duration: 60
     environment:
       node: 18
-      xcode: 15.4        # AdMob eklentisi çok yeni Xcode 16 ile derlenmiyor → kararlı 15.4'e sabitlendi
+      xcode: latest
       cocoapods: default
     scripts:
       - name: Bağımlılıkları kur
@@ -17,16 +17,9 @@ workflows:
         script: |
           if [ ! -d "ios" ]; then npx cap add ios; fi
           npx cap sync ios
-      # AdMob için Info.plist'e App ID + izleme izni yaz (ios/ her derlemede sıfırdan üretilir,
-      # bu yüzden burada enjekte edilir; App ID olmadan uygulama açılışta ÇÖKER).
-      - name: AdMob Info.plist yapılandır
-        script: |
-          PLIST="ios/App/App/Info.plist"; PB=/usr/libexec/PlistBuddy
-          APPID="ca-app-pub-3400523383108649~8516756590"
-          ATT="Reklamlari sana daha alakali gosterebilmek icin kullanilir."
-          $PB -c "Set :GADApplicationIdentifier $APPID" "$PLIST" 2>/dev/null || $PB -c "Add :GADApplicationIdentifier string $APPID" "$PLIST"
-          $PB -c "Set :NSUserTrackingUsageDescription $ATT" "$PLIST" 2>/dev/null || $PB -c "Add :NSUserTrackingUsageDescription string $ATT" "$PLIST"
-          echo "Info.plist -> GADApplicationIdentifier:"; $PB -c "Print :GADApplicationIdentifier" "$PLIST"
+      # NOT: AdMob native eklentisi + Info.plist adımı, imzalı telefon derlemesi aşamasında
+      # (Apple Developer hesabı bağlanınca) yeniden eklenecek — bkz. ADMOB-KURULUM.md.
+      # Gerçek reklam yalnız imzalı cihaz derlemesinde test edilebildiği için burada bilerek yok.
       - name: CocoaPods
         script: |
           cd ios/App && pod install
