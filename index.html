@@ -622,13 +622,18 @@ function update(dt){
     } }
   bossOrbs=bossOrbs.filter(o=>o.life>0 && o.y<H+20);
 
-  for(const e of state.enemies){ if(e.dead){ e.dead-=dt; continue; } e.phase+=dt*6;
+  for(const e of state.enemies){ if(e.dead){ e.dead-=dt;
+      if(e.launched && e.y<H+300){ e.lvy+=GRAV*1.1*dt; e.x+=e.lvx*dt; e.y+=e.lvy*dt; e.spin+=dt*11; } // fırlatıldı: dönerek haritadan düşer
+      continue; } e.phase+=dt*6;
     e.x+=e.vx*dt; if(e.x<e.minx){e.x=e.minx;e.vx=Math.abs(e.vx);} if(e.x>e.maxx){e.x=e.maxx;e.vx=-Math.abs(e.vx);}
     if(e.type==="hopper"){ e.hopCd-=dt; if(e.onGround&&e.hopCd<=0){ e.vy=-470; e.onGround=false; e.hopCd=1.1+Math.random(); } e.vy+=GRAV*dt; e.y+=e.vy*dt; if(e.y>=e.gy){ e.y=e.gy; e.vy=0; e.onGround=true; } }
     else if(e.type==="flyer"){ e.y=e.flyY+Math.sin(e.phase)*26; }
     if(over(p,e) && p.invuln<=0){
-      if(p.vy>0 && p.y+p.h-14<e.y){ e.hp--; p.vy=-JUMP*0.6; p.squash=-1; sfx.stomp(); burst(e.x+e.w/2,e.y,"#ff6b6b",10); ringFX(e.x+e.w/2,e.y,"#fff",36); if(e.hp<=0){e.dead=0.3;state.score+=50;}else{e.col="#555";state.score+=20;} }
-      else if(grown){ e.hp=0; e.dead=0.3; state.score+=50; p.invuln=0.15; sfx.stomp(); burst(e.x+e.w/2,e.y,"#ffb24d",12); }
+      if(p.vy>0 && p.y+p.h-14<e.y){ e.hp--; p.vy=-JUMP*0.6; p.squash=-1; sfx.stomp(); burst(e.x+e.w/2,e.y,"#ff6b6b",10); ringFX(e.x+e.w/2,e.y,"#fff",36); if(e.hp<=0){e.dead=0.9;state.score+=50;}else{e.col="#555";state.score+=20;} } // ezildi: yerinde ters dönerek ölür
+      else if(grown){ // büyüme gücü: canavar zıplayıp dönerek haritadan dışarı düşer
+        e.hp=0; e.dead=9; e.launched=true; e.spin=0;
+        e.lvx=((e.x+e.w/2)>(p.x+p.w/2)?1:-1)*170; e.lvy=-540;
+        state.score+=50; p.invuln=0.15; sfx.stomp(); burst(e.x+e.w/2,e.y,"#ffb24d",12); ringFX(e.x+e.w/2,e.y+e.h/2,"#ffb24d",44); }
       else if(sh){ breakShield(); p.vx=-p.face*220; p.vy=-220; }
       else { die(); return; }
     }
@@ -850,11 +855,19 @@ function drawBoss(){ const bo=state.boss; if(!bo)return;
   ctx.globalAlpha=1; ctx.restore();
 }
 function drawEnemy(e){ const dead=e.dead>0, fd=e.vx>0?1:-1, wob=Math.sin(e.phase), W2=e.w/2, hh=e.h, dk=shade(e.col,-0.22), lt=shade(e.col,0.2);
+  if(e.dead<0 && !e.launched) return;              // ölüm animasyonu bitti: ceset çizilmez
+  if(e.launched && e.y>H+80) return;               // haritadan düştü: artık çizme
   // düşman altına yumuşak gölge
   if(!dead && e.type!=="flyer"){ ctx.globalAlpha=0.2; ctx.fillStyle="#000";
     ctx.beginPath(); ctx.ellipse(e.x+e.w/2,e.y+e.h+3,e.w*0.5,4,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
   ctx.save(); ctx.translate(e.x+e.w/2, e.y+e.h);
-  if(dead){ ctx.globalAlpha=Math.max(0,e.dead/0.3); ctx.scale(1,0.35); }
+  if(e.launched){ // büyüme gücüyle fırlatıldı: gövde merkezinde takla atarak uçar
+    ctx.translate(0,-hh/2); ctx.rotate(e.spin); ctx.translate(0,hh/2);
+  } else if(dead){ // ezildi: olduğu yerde hızla ters döner (180°), sonunda söner
+    const t=1-e.dead/0.9, rot=Math.PI*Math.min(1,t/0.22);
+    ctx.globalAlpha=Math.max(0,Math.min(1,e.dead/0.3));
+    ctx.translate(0,-hh/2); ctx.rotate(rot); ctx.translate(0,hh/2);
+  }
   if(e.type==="walker"){ // ZEHİRLİ SLİME — damlayan, dişli, öfkeli
     const sq=hh*(1+wob*0.07); ctx.fillStyle=e.col; ctx.beginPath(); ctx.moveTo(-W2,0); ctx.bezierCurveTo(-W2,-sq,W2,-sq,W2,0); ctx.closePath(); ctx.fill();
     ctx.strokeStyle=dk; ctx.lineWidth=2; ctx.stroke();
