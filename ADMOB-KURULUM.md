@@ -65,8 +65,27 @@ iOS ve Android için ID'ler AYRI olur.
 - **App Store'a çıkmadan reklam çalışır mı?** Geliştirme aşamasında Google'ın
   TEST reklamları kullanılır; gerçek reklamlar mağaza onayından sonra açılır.
 
-## Sonraki adım (asistanla)
-ID'ler hazır olunca: `@capacitor-community/admob` eklentisi kurulacak,
-`playRewardedAd()` placeholder'ı gerçek ödüllü reklamla değiştirilecek,
-iOS tarafında `Info.plist`'e App ID + App Tracking Transparency izni eklenecek
-ve `privacy.html` reklam verisi açıklamasıyla güncellenecek.
+## ✅ ENTEGRASYON TAMAMLANDI (2026-07-03)
+Verdiğin ID'lerle her şey bağlandı:
+- **App ID:** `ca-app-pub-3400523383108649~8516756590`
+- **Ödüllü Reklam Birimi:** `ca-app-pub-3400523383108649/6189177394`
+
+Yapılanlar:
+- `@capacitor-community/admob` eklentisi `package.json`'a eklendi (Codemagic kurar).
+- `index.html`'de `playRewardedAd()` gerçek AdMob ödüllü reklamını gösterir; tarayıcı/
+  masaüstünde eski simülasyon çalışır (test için).
+- `codemagic.yaml`'a **Info.plist yapılandırma adımı** eklendi (App ID + izleme izni;
+  App ID olmadan uygulama açılışta çöker).
+- `privacy.html` + `PRIVACY.md` reklam + ATT açıklamasıyla güncellendi.
+
+## 🚨 YAYINDAN ÖNCE TEK KRİTİK ADIM
+`index.html` içinde `const AD_TESTING = true;` satırı var.
+- **Şimdi (test/TestFlight):** `true` kalsın — Google'ın TEST reklamları gösterilir,
+  kendi reklamına tıklamak hesabını YASAKLATMAZ. Güvendesin.
+- **App Store'a göndermeden hemen önce:** `false` yap. O zaman GERÇEK reklamlar
+  gösterilir ve para kazanmaya başlarsın. (İstersen bu adımı asistana yaptırırsın.)
+
+## Notlar
+- Android build'i şu an Codemagic'te yok. Android'e çıkarsan `AndroidManifest.xml`'e de
+  App ID meta-data eklenmesi gerekir (o zaman ayarlanır).
+- Gerçek reklamlar, uygulama App Store onayından ve `AD_TESTING=false` olduktan sonra çıkar.

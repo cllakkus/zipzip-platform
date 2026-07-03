@@ -1,36 +1,44 @@
 # ZIPZIP — Gizlilik Politikası / Privacy Policy
 
-_Son güncelleme / Last updated: 2026-07-02_
+_Son güncelleme / Last updated: 2026-07-03_
 
 ## Türkçe
 
-**ZIPZIP** çevrimdışı çalışan bir platform oyunudur.
+**ZIPZIP** temel olarak çevrimdışı çalışan bir platform oyunudur.
 
-- Oyun **hiçbir kişisel veri toplamaz, saklamaz veya üçüncü taraflarla paylaşmaz**.
+- Oyunun kendisi **hiçbir kişisel veri toplamaz veya saklamaz**.
 - İlerleme, coin ve kostüm bilgileri **yalnızca cihazınızda** (yerel depolama) tutulur;
   hiçbir sunucuya gönderilmez.
-- Oyun internet bağlantısı gerektirmez ve ağ isteği yapmaz.
 - Hesap oluşturma, giriş veya e-posta gerekmez.
-- Oyun çocuklar dahil her yaş için uygundur; yaş, konum vb. hiçbir bilgi istenmez.
 
-> Not: İleride ödüllü reklamlar (ör. Google AdMob) eklenirse bu politika, reklam
-> sağlayıcısının veri kullanımını açıklayacak şekilde güncellenecek ve uygulama içi
-> izinler (iOS App Tracking Transparency dahil) buna göre istenecektir.
+**Reklamlar:** Oyun, isteğe bağlı "öldüğün yerden devam et" özelliğinde **Google AdMob**
+ödüllü reklamlarını gösterir. Bu reklamı izlemek tamamen isteğe bağlıdır. AdMob, reklamları
+göstermek ve ölçmek için cihaz tanımlayıcıları gibi sınırlı verileri işleyebilir. Google'ın
+veri kullanımı: https://policies.google.com/technologies/ads . iOS'ta ilk açılışta izleme
+izni (App Tracking Transparency) sorulur; reddederseniz yine kişiselleştirilmemiş reklam
+gösterilir ve oyun tam olarak çalışır.
+
+> Oyun çocuklar dahil her yaş için uygundur. Reklam dışında yaş, konum vb. hiçbir kişisel
+> bilgi istenmez.
 
 ## English
 
-**ZIPZIP** is an offline platformer game.
+**ZIPZIP** is a mainly-offline platformer game.
 
-- The game **does not collect, store, or share any personal data**.
+- The game itself **does not collect or store any personal data**.
 - Progress, coins and costume data are stored **only on your device** (local storage)
   and are never sent to any server.
-- The game requires no internet connection and makes no network requests.
 - No account, sign-in or e-mail is required.
-- Suitable for all ages; no age, location or other information is requested.
 
-> Note: If rewarded ads (e.g. Google AdMob) are added in the future, this policy will
-> be updated to describe the ad provider's data usage, and the appropriate in-app
-> permissions (including iOS App Tracking Transparency) will be requested.
+**Ads:** The game shows **Google AdMob** rewarded ads in the optional "continue where you
+died" feature. Watching this ad is entirely optional. AdMob may process limited data such as
+device identifiers to serve and measure ads. Google's data usage:
+https://policies.google.com/technologies/ads . On iOS you are asked for tracking permission
+(App Tracking Transparency) at first launch; if you decline, non-personalized ads are shown
+and the game works fully.
+
+> Suitable for all ages. Apart from ads, no age, location or other personal information is
+> requested.
 
 ## İletişim / Contact
 
