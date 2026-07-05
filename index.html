@@ -145,6 +145,11 @@
                        calc((100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) * 900 / 520) ); }
     canvas{ border-width:2px; border-radius:8px; }
   }
+  /* JS güvencesi: dokunmatik cihazda body.mplay eklenir → media query'ye bağlı kalmadan tam ekran.
+     .stage genişliği JS ile piksel olarak (inline) verilir; burası yalnız çerçeveyi kaldırır. */
+  body.mplay .wrap>h1, body.mplay .hint{ display:none !important; }
+  body.mplay .wrap{ height:100vh; min-height:100vh; padding:0; gap:0; justify-content:center; }
+  body.mplay canvas{ border-width:2px; border-radius:8px; }
   /* mobil ses düğmesi (dokunmatik kontrollerle birlikte görünür) */
   #t-mute { position:fixed; top:max(10px, env(safe-area-inset-top, 0px)); right:max(12px, env(safe-area-inset-right, 0px)); z-index:31; width:44px; height:44px; border-radius:50%;
     font-size:18px; color:rgba(255,255,255,.9); background:rgba(20,28,52,.55); border:2px solid rgba(160,190,255,.35);
@@ -1183,6 +1188,17 @@ let introJinglePlayed=false;
 function unlockIntroAudio(){ initAudio(); if(!introJinglePlayed && phase!=="play" && phase!=="boss"){ introJinglePlayed=true; setTimeout(introJingle,40); } }
 addEventListener("pointerdown",unlockIntroAudio,{once:true});
 addEventListener("keydown",unlockIntroAudio,{once:true});
+// Mobil tam ekran güvencesi: dokunmatik cihazda oyunu ekrana piksel-piksel sığdır (CSS'e ek).
+function fitStage(){ const stage=document.querySelector(".stage"); if(!stage)return;
+  const touch = matchMedia("(pointer:coarse)").matches || ("ontouchstart" in window);
+  if(!touch){ document.body.classList.remove("mplay"); stage.style.width=""; return; }
+  document.body.classList.add("mplay");
+  const w=Math.min(window.innerWidth, Math.round(window.innerHeight*900/520));
+  stage.style.width=w+"px"; }
+addEventListener("resize",fitStage);
+addEventListener("orientationchange",()=>setTimeout(fitStage,200));
+if(window.visualViewport) visualViewport.addEventListener("resize",fitStage);
+fitStage();
 draw(); requestAnimationFrame(loop);
 </script>
 </body>
