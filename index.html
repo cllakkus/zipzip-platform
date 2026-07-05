@@ -136,14 +136,22 @@
   .lvlcell.boss:not(.locked) { border-color:#ff4d5e; box-shadow:0 3px 0 rgba(0,0,0,.4), 0 0 10px rgba(255,77,94,.45); }
   .lvlcell.cur { outline:3px solid #ffd24d; outline-offset:1px; animation:glow 1.1s ease-in-out infinite; }
   /* mobil/dokunmatik cihazda klavye ipucu satırını gizle */
-  @media (pointer:coarse) { .hint { display:none; } }
+  @media (pointer:coarse){
+    .hint{ display:none; }
+    .wrap>h1{ display:none; }                 /* mobilde başlık gizli → oyun tam ekran (menüde kendi başlığı var) */
+    .wrap{ padding:0; gap:0; height:100vh; justify-content:center; }
+    /* oyunu hem genişliğe hem YÜKSEKLİĞE sığdır (çentik güvenli alan dahil) → dikey taşma/kırpılma biter */
+    .stage{ width:min( calc(100vw - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)),
+                       calc((100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) * 900 / 520) ); }
+    canvas{ border-width:2px; border-radius:8px; }
+  }
   /* mobil ses düğmesi (dokunmatik kontrollerle birlikte görünür) */
   #t-mute { position:fixed; top:max(10px, env(safe-area-inset-top, 0px)); right:max(12px, env(safe-area-inset-right, 0px)); z-index:31; width:44px; height:44px; border-radius:50%;
     font-size:18px; color:rgba(255,255,255,.9); background:rgba(20,28,52,.55); border:2px solid rgba(160,190,255,.35);
     display:flex; align-items:center; justify-content:center; touch-action:none; box-shadow:0 3px 8px rgba(0,0,0,.4); }
   #t-mute.pressed { transform:scale(.92); filter:brightness(1.3); }
   /* dikey tutulan telefonda döndürme uyarısı */
-  #rotate { display:none; position:fixed; inset:0; z-index:80; background:#0b0f1c; flex-direction:column; align-items:center; justify-content:center; gap:18px; text-align:center; }
+  #rotate { display:none; position:fixed; inset:0; z-index:300; background:#0b0f1c; flex-direction:column; align-items:center; justify-content:center; gap:18px; text-align:center; }
   #rotate .r-ico { font-size:52px; animation:rot 1.6s ease-in-out infinite; }
   #rotate p { font-family:var(--pix); font-size:11px; color:#9ad0ff; line-height:2; margin:0; }
   @keyframes rot { 0%,100%{transform:rotate(0)} 50%{transform:rotate(90deg)} }
@@ -1166,6 +1174,15 @@ document.getElementById("t-mute").addEventListener("pointerdown",e=>{ e.preventD
 refreshContinue();
 // açılış introsu: "CREATED BY CELAL AKKUS" — her açılışta oynar, yavaşça sönüp menüyü açar
 setTimeout(()=>{ const iv=document.getElementById("intro"); if(iv){ iv.classList.add("out"); setTimeout(()=>iv.remove(),1700); } },2600);
+// açılış sesi: yükselen "boot" arpeji. iOS'ta ses yalnız ilk dokunuşta açılabildiği için,
+// ilk dokunuş/tuşta bir kez çalar (oyun oynanırken değil).
+function introJingle(){ if(!actx||muted)return; const t=actx.currentTime;
+  [261.63,329.63,392.00,523.25].forEach((f,k)=>toneAt(f,0.55,"triangle",0.15,t+k*0.13)); // C-E-G-C arpej
+  toneAt(783.99,0.7,"sine",0.09,t+0.52); toneAt(1046.50,1.1,"sine",0.07,t+0.60); }        // yumuşak çan/parıltı
+let introJinglePlayed=false;
+function unlockIntroAudio(){ initAudio(); if(!introJinglePlayed && phase!=="play" && phase!=="boss"){ introJinglePlayed=true; setTimeout(introJingle,40); } }
+addEventListener("pointerdown",unlockIntroAudio,{once:true});
+addEventListener("keydown",unlockIntroAudio,{once:true});
 draw(); requestAnimationFrame(loop);
 </script>
 </body>
