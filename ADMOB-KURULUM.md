@@ -65,7 +65,18 @@ iOS ve Android için ID'ler AYRI olur.
 - **App Store'a çıkmadan reklam çalışır mı?** Geliştirme aşamasında Google'ın
   TEST reklamları kullanılır; gerçek reklamlar mağaza onayından sonra açılır.
 
-## DURUM (2026-07-03): Kod hazır, native kütüphane imzalı aşamada açılacak
+## ✅ GÜNCEL DURUM (2026-07-03 akşam): HER ŞEY OTOMATİK BAĞLANDI
+Apple Developer üyeliği alındı → yayın hattı kuruldu:
+- `codemagic.yaml` içindeki **ZIPZIP iOS Release** workflow'u AdMob eklentisini
+  **kendisi kurar** ve Info.plist'i **kendisi ayarlar**. Aşağıdaki "yeniden açma"
+  adımları ARTIK GEREKSİZ (tarihçe olarak duruyor).
+- `index.html` → `AD_TESTING = false` (YAYIN MODU: gerçek reklamlar).
+- ⚠️ TestFlight'ta reklamı izle ama **TIKLAMA** (kendi reklamına tıklamak yasaklatır).
+- Yayın adımları için tek kaynak: **YAYINLAMA.md**.
+
+---
+
+## (TARİHÇE) DURUM (2026-07-03): Kod hazır, native kütüphane imzalı aşamada açılacak
 Senin ID'lerin (kayıtlı, kaybolmaz):
 - **App ID:** `ca-app-pub-3400523383108649~8516756590`
 - **Ödüllü Reklam Birimi:** `ca-app-pub-3400523383108649/6189177394`

@@ -35,6 +35,61 @@ workflows:
     artifacts:
       - build/**/*.app
       - /tmp/xcodebuild_logs/*.log
-    # publishing:
-    #   app_store_connect:   # TestFlight/App Store için (Apple hesabı + API key gerekir)
-    #     auth: integration
+
+  # ================================================================
+  # ZIPZIP iOS YAYIN — imzalı .ipa derler ve TestFlight'a otomatik yükler.
+  # ÖN KOŞUL (bir kez, Codemagic UI'da): Teams > Personal Account > Integrations >
+  # Developer Portal > "App Store Connect API key" ekle ve adını AYNEN "zipzip-asc" yap.
+  # (Anahtar App Store Connect > Users and Access > Integrations'tan üretilir — bkz. YAYINLAMA.md)
+  # ================================================================
+  ios-release:
+    name: ZIPZIP iOS Release
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    integrations:
+      app_store_connect: zipzip-asc
+    environment:
+      node: 18
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.zipzip.game
+    scripts:
+      - name: Bağımlılıkları kur
+        script: npm install
+      - name: AdMob eklentisini kur (yalnız yayın derlemesi)
+        script: npm install @capacitor-community/admob@^6
+      - name: Web içeriğini www'ya kopyala
+        script: npm run copy
+      - name: iOS platformunu ekle + senkronla
+        script: |
+          if [ ! -d "ios" ]; then npx cap add ios; fi
+          npx cap sync ios
+      - name: Info.plist yapılandır (AdMob App ID + izleme izni + şifreleme muafiyeti)
+        script: |
+          PLIST="ios/App/App/Info.plist"; PB=/usr/libexec/PlistBuddy
+          APPID="ca-app-pub-3400523383108649~8516756590"
+          ATT="Reklamlari sana daha alakali gosterebilmek icin kullanilir."
+          $PB -c "Set :GADApplicationIdentifier $APPID" "$PLIST" 2>/dev/null || $PB -c "Add :GADApplicationIdentifier string $APPID" "$PLIST"
+          $PB -c "Set :NSUserTrackingUsageDescription $ATT" "$PLIST" 2>/dev/null || $PB -c "Add :NSUserTrackingUsageDescription string $ATT" "$PLIST"
+          $PB -c "Set :ITSAppUsesNonExemptEncryption false" "$PLIST" 2>/dev/null || $PB -c "Add :ITSAppUsesNonExemptEncryption bool false" "$PLIST"
+          echo "GADApplicationIdentifier:"; $PB -c "Print :GADApplicationIdentifier" "$PLIST"
+      - name: Sürüm + derleme numarası (TestFlight her yüklemede benzersiz ister)
+        script: |
+          cd ios/App
+          agvtool new-marketing-version 1.0.0
+          agvtool new-version -all $BUILD_NUMBER
+      - name: CocoaPods
+        script: cd ios/App && pod install
+      - name: İmza profillerini uygula
+        script: xcode-project use-profiles
+      - name: İmzalı IPA derle
+        script: xcode-project build-ipa --workspace ios/App/App.xcworkspace --scheme App
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
