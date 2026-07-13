@@ -4,6 +4,20 @@
 > Son güncelleme: 2026-07-02 · Yerel commit'ler push BEKLİYOR (kullanıcı GitHub Desktop'tan push edecek).
 > Kod tabanı incelenerek doğrulanmıştır; sadece konuşma özeti değildir.
 >
+> **YAYIN AŞAMASI (2026-07-03 gece, commit `c64e76e`):** Apple Developer üyeliği ALINDI.
+> - PİKSEL SANAT dönüşümü (kullanıcının referans görseline göre): pxBricks tuğla zemin/platform/
+>   duvar, püsküllü çimen bandı, piksel bulut/güneş/ay/tepe/ağaç, drawHeroPixel ile bloklu-konturlu
+>   kahraman (4 kostüm türü korunur), dükkanda piksel karakter önizlemeleri. Fizik değişmedi.
+> - `AD_TESTING=false` (YAYIN MODU — TestFlight'ta reklama tıklama uyarısı geçerli).
+> - codemagic.yaml: **ZIPZIP iOS Release** workflow'u (ios_signing app_store + `zipzip-asc` API key
+>   entegrasyonu; AdMob eklentisini workflow içinde kurar; Info.plist AdMob/ATT/şifreleme-muafiyeti;
+>   agvtool build no; TestFlight'a otomatik yükleme). İmzasız smoke-test workflow'una dokunulmadı.
+> - `YAYINLAMA.md` = 10 adımlık kullanıcı rehberi (tek yayın kaynağı), `APPSTORE-METIN.md` = tüm
+>   mağaza metinleri, `store-assets/` yeni piksel görsellerle yeniden üretildi.
+> - Kullanıcının sıradaki işi: YAYINLAMA.md Adım 1-5 (Bundle ID → App Store Connect app → API key →
+>   Codemagic entegrasyonu → Release build). Release build'de AdMob Swift derleme hatası çıkarsa
+>   logdaki error satırları istenir (bilinen risk; fallback: workflow'daki AdMob adımını çıkar).
+>
 > **GÜNCEL DURUM ÖZETİ (2026-07-02):** Oyun YAYINA HAZIR duruma getirildi:
 > - Hata #1 (reklam→20. seviye) ÇÖZÜLDÜ: bayat kayıt kaynaklıydı; `reviveAtSpot` guard'ı +
 >   menüye "İLERLEMEYİ SIFIRLA" butonu eklendi; KeyR artık sadece oyun içinde bölümü yeniler.
