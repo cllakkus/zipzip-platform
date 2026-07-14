@@ -254,7 +254,7 @@ Koş, zıpla, kızı kurtar!
   **Notes** kutusuna:
   📋
   ```
-  Cevrimdisi calisan bir platform oyunudur. Hesap/giris gerekmez. Oyuncu olunce, oldugu yerden devam etmek icin ISTEGE BAGLI Google AdMob odullu reklami izleyebilir. Baska satin alma veya veri toplama yoktur.
+  Tamamen cevrimdisi calisan bir platform oyunudur. Hesap/giris gerekmez, hicbir veri toplanmaz, satin alma yoktur.
   ```
 
 ✅ Kaydet (sağ üst **Save**). Devam.
@@ -267,28 +267,25 @@ Koş, zıpla, kızı kurtar!
 Sol menü **App Information**:
 - **Category → Primary:** Games
 - **Secondary** (varsa): Action ve/veya Adventure
-- **Content Rights:** "Üçüncü taraf içerik içeriyor mu?" → **Yes** (reklamlar üçüncü taraf içeriktir).
+- **Content Rights:** "Üçüncü taraf içerik içeriyor mu?" → **No** (v1.0'da reklam yok).
 
 ## 8.2 — Age Rating (Yaş sınırı)
 **App Information** içinde **Age Rating → Edit** → anketi doldur:
 - **"Cartoon or Fantasy Violence"** → **Infrequent/Mild** (düşman ezmece var, hafif)
 - **Diğer TÜM sorular** → **None**
 - Gambling / Contests → None · Unrestricted Web Access → **No**
-- Sonuç **9+** çıkacak → **Done**. (Reklamlı oyunlarda normaldir.)
+- Sonuç **9+** çıkacak → **Done**.
 
-## 8.3 — App Privacy (Gizlilik anketi — AdMob yüzünden önemli)
+## 8.3 — App Privacy (Gizlilik anketi)
+> 📌 v1.0 tamamen çevrimdışı ve **hiçbir veri toplamıyor** (reklam v1.1'de gelecek).
+> O yüzden en kolay cevap:
+
 Sol menü **App Privacy** → **Get Started** / **Edit**:
-
 1. **Privacy Policy URL:** 📋 `https://cllakkus.github.io/zipzip-platform/privacy.html`
-2. "Do you or your partners collect data from this app?" → **Yes, we collect data**
-3. Veri türlerinde SADECE şu ikisini işaretle (başka HİÇBİR şey işaretleme):
-   - ☑ **Identifiers → Device ID**
-   - ☑ **Usage Data → Advertising Data**
-4. İkisi için de aynı cevapları ver:
-   - **Amaç (purpose):** ☑ **Third-Party Advertising**
-   - **"Linked to the user's identity?"** → **No**
-   - **"Used for tracking purposes?"** → **Yes**
-5. **Publish** / **Save**.
+2. "Do you or your partners collect data from this app?" → **No, we do not collect data**
+3. **Publish** / **Save**.
+
+> (İleride reklamları eklediğimizde buraya dönüp veri toplama cevaplarını birlikte güncelleriz.)
 
 ✅ Anket bitti. Son adım!
 

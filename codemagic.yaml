@@ -57,23 +57,21 @@ workflows:
     scripts:
       - name: Bağımlılıkları kur
         script: npm install
-      - name: AdMob eklentisini kur (yalnız yayın derlemesi)
-        script: npm install @capacitor-community/admob@^6
+      # NOT: AdMob native eklentisi v1.0'da YOK — Google reklam SDK'sı Codemagic'in Xcode'uyla
+      # derlenmiyor (status 65). v1.0 reklamsız yayınlanır (oyun kodu reklamsız da devam ettirir);
+      # reklam, derleme sorunu çözülünce v1.1 güncellemesinde eklenecek.
       - name: Web içeriğini www'ya kopyala
         script: npm run copy
       - name: iOS platformunu ekle + senkronla
         script: |
           if [ ! -d "ios" ]; then npx cap add ios; fi
           npx cap sync ios
-      - name: Info.plist yapılandır (AdMob App ID + izleme izni + şifreleme muafiyeti)
+      - name: Uygulama ikonu + açılış görselini üret (resources/icon.png + splash.png'den)
+        script: npx @capacitor/assets generate --ios
+      - name: Info.plist yapılandır (şifreleme muafiyeti — TestFlight uyumluluk sorusunu geçer)
         script: |
           PLIST="ios/App/App/Info.plist"; PB=/usr/libexec/PlistBuddy
-          APPID="ca-app-pub-3400523383108649~8516756590"
-          ATT="Reklamlari sana daha alakali gosterebilmek icin kullanilir."
-          $PB -c "Set :GADApplicationIdentifier $APPID" "$PLIST" 2>/dev/null || $PB -c "Add :GADApplicationIdentifier string $APPID" "$PLIST"
-          $PB -c "Set :NSUserTrackingUsageDescription $ATT" "$PLIST" 2>/dev/null || $PB -c "Add :NSUserTrackingUsageDescription string $ATT" "$PLIST"
           $PB -c "Set :ITSAppUsesNonExemptEncryption false" "$PLIST" 2>/dev/null || $PB -c "Add :ITSAppUsesNonExemptEncryption bool false" "$PLIST"
-          echo "GADApplicationIdentifier:"; $PB -c "Print :GADApplicationIdentifier" "$PLIST"
       - name: Sürüm + derleme numarası (TestFlight her yüklemede benzersiz ister)
         script: |
           cd ios/App
