@@ -326,6 +326,7 @@ Sol menü **App Privacy** → **Get Started** / **Edit**:
 | Belirti | Çözüm |
 |---|---|
 | Codemagic: "integration zipzip-asc not found" | Bölüm 4'te anahtar adı birebir `zipzip-asc` değil. Düzelt. |
+| "No matching profiles found ... com.zipzip.game" | Çözüldü (imzalama artık profili otomatik üretiyor). Push + build'i tekrar başlat. Yine olursa: API anahtarını **Admin** yetkisiyle yeniden üret (Bölüm 3). |
 | Release build 🔴, logda AdMob/Swift hatası | `error:` satırlarının ekran görüntüsünü bana at. |
 | Build "ZIPZIP iOS" seçtim, imzasız çıktı | Yanlış workflow. **ZIPZIP iOS Release** (sonu Release) seç. |
 | TestFlight'ta build yok | 10–30 dk "Processing" sürer; e-postana uyarı geldi mi bak. |
