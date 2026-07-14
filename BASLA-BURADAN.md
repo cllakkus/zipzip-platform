@@ -135,6 +135,19 @@ Bu anahtar, Codemagic'in senin adına Apple'a uygulama yüklemesini sağlar.
 
 ✅ Codemagic artık senin adına Apple'a yükleme yapabilir. Bir daha bu bölümü yapmayacaksın.
 
+## BÖLÜM 4B — İmzalama sertifikası ve profili ekle 🔐 [BİR KEZ]
+
+`.p8` anahtarı Apple hesabına erişim sağlar; uygulamayı tek başına imzalamaz.
+
+1. Codemagic → **Personal Account → codemagic.yaml settings → Code signing identities**.
+2. **iOS certificates** sekmesinde özel anahtarıyla birlikte geçerli bir
+   **Apple Distribution** sertifikası bulunduğunu doğrula. Yoksa **Generate certificate** ile
+   oluştur; ekranda istenirse oluşan `.p12` dosyasını ve verilen parolayı kullanarak geri yükle.
+3. **iOS provisioning profiles → Fetch profiles** bölümünde `com.zipzip.game` için
+   **App Store** profilini ekle. Profil yoksa Apple Developer Portal'da **Profiles → + →
+   App Store Connect** yoluyla oluşturup Codemagic'e geri dönerek yeniden **Fetch profiles** yap.
+4. Profil satırının sertifika eşleşmesi yeşil görünmelidir.
+
 ---
 
 # BÖLÜM 5 — İmzalı derleme başlat  🔧 [CODEMAGIC İŞİ #2]
@@ -150,7 +163,7 @@ Bu anahtar, Codemagic'in senin adına Apple'a uygulama yüklemesini sağlar.
    - 🟢 **YEŞİL:** İmzalı .ipa derlendi VE TestFlight'a otomatik yüklendi! → Bölüm 6'ya geç.
    - 🔴 **KIRMIZI:** Panik yok. Kırmızı olan adıma tıkla → açılan siyah logun **en altına** in →
      içinde kırmızı **`error:`** geçen satırların **ekran görüntüsünü bana at**. Çözüm planım hazır
-     (tek olası risk reklam kütüphanesinin derlenmesi, onu da hallederiz).
+     Hata metni hangi ayarın eksik olduğunu doğrudan gösterecektir.
 
 ✅ Yeşil aldıysan: uygulaman Apple'a yüklendi. Şimdi telefonunda test edeceğiz.
 
@@ -325,7 +338,7 @@ Sol menü **App Privacy** → **Get Started** / **Edit**:
 | Belirti | Çözüm |
 |---|---|
 | Codemagic: "integration zipzip-asc not found" | Bölüm 4'te anahtar adı birebir `zipzip-asc` değil. Düzelt. |
-| "No matching profiles found ... com.zipzip.game" | Çözüldü (imzalama artık profili otomatik üretiyor). Push + build'i tekrar başlat. Yine olursa: API anahtarını **Admin** yetkisiyle yeniden üret (Bölüm 3). |
+| "No matching profiles found ... com.zipzip.game" | Bölüm 4B'yi uygula: Codemagic Code signing identities içinde `com.zipzip.game` App Store profili ve onunla eşleşen Apple Distribution sertifikası bulunmalıdır. `.p8` tek başına yeterli değildir. |
 | Release build 🔴, logda AdMob/Swift hatası | `error:` satırlarının ekran görüntüsünü bana at. |
 | Build "ZIPZIP iOS" seçtim, imzasız çıktı | Yanlış workflow. **ZIPZIP iOS Release** (sonu Release) seç. |
 | TestFlight'ta build yok | 10–30 dk "Processing" sürer; e-postana uyarı geldi mi bak. |
@@ -342,6 +355,7 @@ Sol menü **App Privacy** → **Get Started** / **Edit**:
 - [ ] Bölüm 2: App Store Connect'te ZIPZIP oluşturuldu
 - [ ] Bölüm 3: Issuer ID + Key ID not edildi, `.p8` kaydedildi
 - [ ] Bölüm 4: Codemagic'e `zipzip-asc` adıyla anahtar eklendi
+- [ ] Bölüm 4B: Apple Distribution sertifikası + `com.zipzip.game` App Store profili Codemagic'e eklendi
 - [ ] Bölüm 5: ZIPZIP iOS Release build 🟢 yeşil
 - [ ] Bölüm 6: Oyun iPhone'da TestFlight'tan oynandı
 - [ ] Bölüm 7: Görseller + metinler girildi

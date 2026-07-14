@@ -56,13 +56,23 @@
    - **API key:** indirdiğin `.p8` dosyasını yükle
 4. **Save**.
 
+## ADIM 4B — İmzalama kimliklerini Codemagic'e ekle (bir kez)
+1. **Personal Account → codemagic.yaml settings → Code signing identities**.
+2. **iOS certificates** altında özel anahtarıyla birlikte geçerli bir **Apple Distribution**
+   sertifikası bulunmalı. Yoksa **Generate certificate** ile oluştur ve arayüz isterse oluşan
+   `.p12` dosyasını verilen parolayla geri yükle.
+3. **iOS provisioning profiles → Fetch profiles** altında `com.zipzip.game` için **App Store**
+   profilini ekle. Profil yoksa Apple Developer Portal → **Profiles → + → App Store Connect**
+   yoluyla oluşturup Codemagic'e dönerek tekrar getir.
+4. Profilin sertifika eşleşmesi yeşil görünmeden build başlatma. `.p8` dosyası tek başına
+   uygulamayı imzalamaz; yalnızca Apple API erişimini sağlar.
+
 ## ADIM 5 — İmzalı derleme + TestFlight yüklemesi (tek tık)
 1. GitHub Desktop → **Push origin** (bekleyen tüm commit'ler gitsin).
 2. Codemagic → zipzip-platform → **Start new build** → **Workflow: ZIPZIP iOS Release** → Start.
 3. ~15–25 dk sürer. 🟢 Yeşil = .ipa derlendi VE TestFlight'a otomatik yüklendi.
    - 🔴 Kırmızı olursa: kırmızı adıma tıkla → logun sonundaki `error:` satırlarının
-     ekran görüntüsünü asistana at. (Muhtemel tek risk AdMob eklentisinin derlenmesi;
-     çözüm planı hazır, panik yok.)
+     ekran görüntüsünü asistana at.
 
 ## ADIM 6 — Telefonunda test et (TestFlight)
 1. App Store Connect → uygulaman → **TestFlight** sekmesi. Build önce "Processing"

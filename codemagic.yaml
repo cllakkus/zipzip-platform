@@ -48,6 +48,9 @@ workflows:
     integrations:
       app_store_connect: zipzip-asc
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.zipzip.game
       node: 22
       xcode: latest
       cocoapods: default
@@ -88,23 +91,44 @@ workflows:
           agvtool new-version -all $BUILD_NUMBER
       - name: CocoaPods
         script: cd ios/App && pod install --repo-update
-      # Kod imzalama: sertifika + provizyon profilini OTOMATİK oluştur/çek (Codemagic resmi yöntemi).
-      # --create bayrağı: bundle ID, dağıtım sertifikası ve profil yoksa API ile üretir → "No matching
-      # profiles" hatasının kesin çözümü. Kimlik bilgileri zipzip-asc entegrasyonundan gelir.
-      - name: Kod imzalama (sertifika + profil otomatik)
+      # Codemagic, environment.ios_signing altında seçilen Apple Distribution sertifikasını ve
+      # App Store profilini build başlamadan indirir. App Store Connect .p8 anahtarı tek başına
+      # uygulama imzalamaz; Codemagic Code signing identities bölümünde eşleşen iki dosya bulunmalıdır.
+      - name: Kod imzalama ve profili doğrula
         script: |
-          keychain initialize
-          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
-          keychain add-certificates
-          # node_modules altındaki bağımlılık projelerini değil, yalnızca uygulama hedefini imzala.
+          if ! security find-identity -v -p codesigning | grep -Eq '"(Apple|iPhone) Distribution:'; then
+            echo "HATA: Build makinesinde özel anahtarıyla birlikte Apple Distribution sertifikası yok."
+            echo "Codemagic > Team settings > codemagic.yaml settings > Code signing identities > iOS certificates bölümünü kontrol et."
+            exit 1
+          fi
+
           xcode-project use-profiles \
             --project "$CM_BUILD_DIR/ios/App/App.xcodeproj" \
             --code-signing-setup-verbose-logging
+
+          SETTINGS=$(xcodebuild \
+            -project "$CM_BUILD_DIR/ios/App/App.xcodeproj" \
+            -target App \
+            -configuration Release \
+            -showBuildSettings)
+          echo "$SETTINGS" | grep -E 'PRODUCT_BUNDLE_IDENTIFIER|DEVELOPMENT_TEAM|CODE_SIGN_IDENTITY|PROVISIONING_PROFILE_SPECIFIER'
+
+          PROFILE=$(echo "$SETTINGS" | awk -F ' = ' '/PROVISIONING_PROFILE_SPECIFIER/ {print $2; exit}')
+          if [ -z "$PROFILE" ]; then
+            PROFILE=$(echo "$SETTINGS" | awk -F ' = ' '/PROVISIONING_PROFILE =/ {print $2; exit}')
+          fi
+          TEAM=$(echo "$SETTINGS" | awk -F ' = ' '/DEVELOPMENT_TEAM/ {print $2; exit}')
+          if [ -z "$PROFILE" ] || [ -z "$TEAM" ]; then
+            echo "HATA: com.zipzip.game için Apple Distribution sertifikası/provisioning profile App hedefine atanamadı."
+            echo "Codemagic > Team settings > codemagic.yaml settings > Code signing identities bölümünü kontrol et."
+            exit 1
+          fi
       - name: İmzalı IPA derle
         script: |
           xcode-project build-ipa \
             --workspace "$CM_BUILD_DIR/ios/App/App.xcworkspace" \
-            --scheme App
+            --scheme App \
+            --archive-flags="-destination 'generic/platform=iOS'"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
