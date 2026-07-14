@@ -254,7 +254,7 @@ Koş, zıpla, kızı kurtar!
   **Notes** kutusuna:
   📋
   ```
-  Tamamen cevrimdisi calisan bir platform oyunudur. Hesap/giris gerekmez, hicbir veri toplanmaz, satin alma yoktur.
+  Temel oyun cevrimdisi calisir. Hesap/giris ve satin alma yoktur. Oyuncu isterse oldugu yerden devam etmek icin Google AdMob odullu reklam izleyebilir.
   ```
 
 ✅ Kaydet (sağ üst **Save**). Devam.
@@ -267,7 +267,8 @@ Koş, zıpla, kızı kurtar!
 Sol menü **App Information**:
 - **Category → Primary:** Games
 - **Secondary** (varsa): Action ve/veya Adventure
-- **Content Rights:** "Üçüncü taraf içerik içeriyor mu?" → **No** (v1.0'da reklam yok).
+- **Content Rights:** "Üçüncü taraf içerik içeriyor mu?" → **Yes** (Google AdMob reklamları);
+  AdMob kullanım koşulları kapsamında gösterim hakkın vardır.
 
 ## 8.2 — Age Rating (Yaş sınırı)
 **App Information** içinde **Age Rating → Edit** → anketi doldur:
@@ -277,15 +278,16 @@ Sol menü **App Information**:
 - Sonuç **9+** çıkacak → **Done**.
 
 ## 8.3 — App Privacy (Gizlilik anketi)
-> 📌 v1.0 tamamen çevrimdışı ve **hiçbir veri toplamıyor** (reklam v1.1'de gelecek).
-> O yüzden en kolay cevap:
+> 📌 v1.0 isteğe bağlı Google AdMob ödüllü reklamları içerir. Apple, uygulamaya eklenen
+> üçüncü taraf SDK'ların veri kullanımının da açıklanmasını ister.
 
 Sol menü **App Privacy** → **Get Started** / **Edit**:
 1. **Privacy Policy URL:** 📋 `https://cllakkus.github.io/zipzip-platform/privacy.html`
-2. "Do you or your partners collect data from this app?" → **No, we do not collect data**
-3. **Publish** / **Save**.
-
-> (İleride reklamları eklediğimizde buraya dönüp veri toplama cevaplarını birlikte güncelleriz.)
+2. "Do you or your partners collect data from this app?" → **Yes, we collect data**
+3. Google Mobile Ads açıklamasına göre en az şu türleri işaretle: **Coarse Location, Device ID,
+   Advertising Data, Product Interaction, Performance Data, Crash Data**. Kullanım amaçlarını
+   App Store Connect'teki güncel seçeneklerle eşleştirirken Google'ın veri açıklama sayfasını esas al.
+4. **Publish** / **Save**.
 
 ✅ Anket bitti. Son adım!
 

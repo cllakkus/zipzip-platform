@@ -182,6 +182,7 @@
         <button id="btn-shop" class="btn pix sm">🪙 DÜKKAN</button>
       </div>
       <button id="btn-reset" class="btn pix sm alt" style="margin-top:14px;font-size:7px;opacity:.7">İLERLEMEYİ SIFIRLA</button>
+      <button id="btn-ad-privacy" class="btn pix sm hidden" style="margin-top:8px;font-size:7px;opacity:.7">REKLAM GİZLİLİK SEÇENEKLERİ</button>
     </div>
     <div id="death" class="overlay death hidden">
       <h2 class="pix-title">YAKALANDIN!</h2>
@@ -555,19 +556,35 @@ function reviveAtSpot(){ if(!state||!state.level){ showMenu(); return; } const d
 const ADMOB_APP_ID   = "ca-app-pub-3400523383108649~8516756590";  // (bilgi amaçlı; asıl yeri iOS Info.plist)
 const ADMOB_REWARD_ID= "ca-app-pub-3400523383108649/6189177394";  // ödüllü reklam birimi
 const AD_TESTING     = false;  // YAYIN MODU: gerçek reklamlar. ⚠️ TestFlight'ta reklama TIKLAMA (izle/kapat yeterli) — kendi reklamına tıklamak AdMob hesabını riske atar.
-// AdMob'u telefonda bir kez başlat (ATT izni de burada istenir)
-(async()=>{ try{ const A=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.AdMob;
-  if(A && Capacitor.isNativePlatform && Capacitor.isNativePlatform()){
-    await A.initialize({ initializeForTesting:AD_TESTING, requestTrackingAuthorization:true }); } }catch(e){} })();
+function nativeAdMob(){ return window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.AdMob; }
+function isNativeApp(){ return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform()); }
+function updateAdPrivacyButton(info){ const b=document.getElementById("btn-ad-privacy"); if(!b)return;
+  b.classList.toggle("hidden", !info || info.privacyOptionsRequirementStatus!=="REQUIRED"); }
+async function initializeAdMob(){
+  const A=nativeAdMob(); if(!isNativeApp() || !A)return false;
+  try{
+    let consent=await A.requestConsentInfo();
+    if(consent&&consent.isConsentFormAvailable&&consent.status==="REQUIRED")consent=await A.showConsentForm();
+    updateAdPrivacyButton(consent);
+    if(consent&&consent.canRequestAds===false)return false;
+    const tracking=await A.trackingAuthorizationStatus().catch(()=>null);
+    if(tracking&&tracking.status==="notDetermined")await A.requestTrackingAuthorization();
+    await A.initialize({ initializeForTesting:AD_TESTING });
+    return true;
+  }catch(e){ return false; }
+}
+const admobReady=initializeAdMob();
+async function showAdPrivacyOptions(){ const A=nativeAdMob(); if(!A)return;
+  try{ await A.showPrivacyOptionsForm(); updateAdPrivacyButton(await A.requestConsentInfo()); }catch(e){} }
 function simulateAd(onReward){ const t=document.getElementById("adv-text"); let n=2; t.textContent="REKLAM… "+n;
   const id=setInterval(()=>{ n--; if(n>0){ t.textContent="REKLAM… "+n; } else { clearInterval(id); onReward(); } },1000); }
 async function playRewardedAd(onReward){
-  const A=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.AdMob;
-  const native=!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+  const A=nativeAdMob(), native=isNativeApp();
   if(!native || !A){ simulateAd(onReward); return; }        // tarayıcı/masaüstü → simülasyon
   let done=false; const finish=()=>{ if(done)return; done=true; onReward(); };
   const t=document.getElementById("adv-text"); if(t)t.textContent="REKLAM YÜKLENİYOR…";
   try{
+    if(!await admobReady){ finish(); return; }
     await A.prepareRewardVideoAd({ adId:ADMOB_REWARD_ID, isTesting:AD_TESTING });
     await A.showRewardVideoAd();   // reklam bitince/ödül alınınca döner
     finish();
@@ -1226,6 +1243,7 @@ document.getElementById("menu-coins").textContent=getCoins();
 // bölüm seçim
 document.getElementById("btn-levels").addEventListener("click",openLevels);
 document.getElementById("btn-reset").addEventListener("click",resetProgress);
+document.getElementById("btn-ad-privacy").addEventListener("click",showAdPrivacyOptions);
 document.getElementById("levels-back").addEventListener("click",showMenu);
 // dükkan sekmeleri
 document.getElementById("tab-cos").addEventListener("click",()=>{shopTab="cos";renderShop();});

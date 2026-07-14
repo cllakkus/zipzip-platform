@@ -1,6 +1,6 @@
 # ZIPZIP — Gizlilik Politikası / Privacy Policy
 
-_Son güncelleme / Last updated: 2026-07-03_
+_Son güncelleme / Last updated: 2026-07-14_
 
 ## Türkçe
 

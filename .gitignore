@@ -4,3 +4,8 @@ ios/
 www/
 .DS_Store
 build/
+
+# Apple signing secrets and profiles must never be committed.
+AuthKey_*.p8
+*.p12
+*.mobileprovision

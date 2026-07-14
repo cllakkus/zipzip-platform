@@ -119,7 +119,7 @@ Hikâye: Kötü **Gölgehan** kızı kaçırdı; oyuncu 100 bölüm boyunca peş
 
 ## 5. Teknoloji ve Klasör Yapısı
 
-**Teknoloji:** Saf HTML5 Canvas 2D + vanilla JS (framework yok) · Web Audio (sentez ses) · localStorage (kayıt) · Capacitor 6 (native sarmalayıcı) · Codemagic CI (iOS) · Node sadece dev/derleme scriptleri için.
+**Teknoloji:** Saf HTML5 Canvas 2D + vanilla JS (framework yok) · Web Audio (sentez ses) · localStorage (kayıt) · Capacitor 8 (native sarmalayıcı) · Codemagic CI (iOS) · Node sadece dev/derleme scriptleri için.
 
 ```
 C:\Users\cllak\OneDrive\Desktop\zipzip-platform\   ← PROJE KÖKÜ (git repo, dal: master)

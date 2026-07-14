@@ -5,24 +5,23 @@ workflows:
     instance_type: mac_mini_m1
     max_build_duration: 60
     environment:
-      node: 18
+      node: 22
       xcode: latest
       cocoapods: default
     scripts:
       - name: Bağımlılıkları kur
-        script: npm install
+        script: npm ci
       - name: Web içeriğini www'ya kopyala
         script: npm run copy
       - name: iOS platformunu ekle + senkronla
         script: |
-          if [ ! -d "ios" ]; then npx cap add ios; fi
+          if [ ! -d "ios" ]; then npx cap add ios --packagemanager CocoaPods; fi
           npx cap sync ios
-      # NOT: AdMob native eklentisi + Info.plist adımı, imzalı telefon derlemesi aşamasında
-      # (Apple Developer hesabı bağlanınca) yeniden eklenecek — bkz. ADMOB-KURULUM.md.
-      # Gerçek reklam yalnız imzalı cihaz derlemesinde test edilebildiği için burada bilerek yok.
+      # AdMob native eklentisi package.json'da sabittir. Simülatör adımı SDK'nın derlenmesini
+      # doğrular; gerçek reklam gösterimi yalnızca imzalı cihaz/TestFlight sürümünde test edilir.
       - name: CocoaPods
         script: |
-          cd ios/App && pod install
+          cd ios/App && pod install --repo-update
       # --- AŞAMA 1: imzasız derleme (boru hattı çalışıyor mu testi) ---
       - name: Derle (imzasız — simülatör)
         script: |
@@ -49,28 +48,38 @@ workflows:
     integrations:
       app_store_connect: zipzip-asc
     environment:
-      node: 18
+      node: 22
       xcode: latest
       cocoapods: default
       vars:
         BUNDLE_ID: "com.zipzip.game"
     scripts:
       - name: Bağımlılıkları kur
-        script: npm install
-      # NOT: AdMob native eklentisi v1.0'da YOK — Google reklam SDK'sı Codemagic'in Xcode'uyla
-      # derlenmiyor (status 65). v1.0 reklamsız yayınlanır (oyun kodu reklamsız da devam ettirir);
-      # reklam, derleme sorunu çözülünce v1.1 güncellemesinde eklenecek.
+        script: npm ci
       - name: Web içeriğini www'ya kopyala
         script: npm run copy
       - name: iOS platformunu ekle + senkronla
         script: |
-          if [ ! -d "ios" ]; then npx cap add ios; fi
+          if [ ! -d "ios" ]; then npx cap add ios --packagemanager CocoaPods; fi
           npx cap sync ios
       - name: Uygulama ikonu + açılış görselini üret (resources/icon.png + splash.png'den)
         script: npx @capacitor/assets generate --ios
-      - name: Info.plist yapılandır (şifreleme muafiyeti — TestFlight uyumluluk sorusunu geçer)
+      - name: Info.plist yapılandır (AdMob + ATT + SKAdNetwork + şifreleme muafiyeti)
         script: |
           PLIST="ios/App/App/Info.plist"; PB=/usr/libexec/PlistBuddy
+          APPID="ca-app-pub-3400523383108649~8516756590"
+          ATT="Bu tanimlayici size uygun reklamlar gostermek ve reklam performansini olcmek icin kullanilir."
+          $PB -c "Set :GADApplicationIdentifier $APPID" "$PLIST" 2>/dev/null || $PB -c "Add :GADApplicationIdentifier string $APPID" "$PLIST"
+          $PB -c "Set :NSUserTrackingUsageDescription $ATT" "$PLIST" 2>/dev/null || $PB -c "Add :NSUserTrackingUsageDescription string $ATT" "$PLIST"
+          $PB -c "Delete :SKAdNetworkItems" "$PLIST" 2>/dev/null || true
+          $PB -c "Add :SKAdNetworkItems array" "$PLIST"
+          SKAD_IDS="cstr6suwn9.skadnetwork 4fzdc2evr5.skadnetwork 2fnua5tdw4.skadnetwork ydx93a7ass.skadnetwork p78axxw29g.skadnetwork v72qych5uu.skadnetwork ludvb6z3bs.skadnetwork cp8zw746q7.skadnetwork 3sh42y64q3.skadnetwork c6k4g5qg8m.skadnetwork s39g8k73mm.skadnetwork wg4vff78zm.skadnetwork 3qy4746246.skadnetwork f38h382jlk.skadnetwork hs6bdukanm.skadnetwork mlmmfzh3r3.skadnetwork v4nxqhlyqp.skadnetwork wzmmz9fp6w.skadnetwork su67r6k2v3.skadnetwork yclnxrl5pm.skadnetwork t38b2kh725.skadnetwork 7ug5zh24hu.skadnetwork gta9lk7p23.skadnetwork vutu7akeur.skadnetwork y5ghdn5j9k.skadnetwork v9wttpbfk9.skadnetwork n38lu8286q.skadnetwork 47vhws6wlr.skadnetwork kbd757ywx3.skadnetwork 9t245vhmpl.skadnetwork a2p9lx4jpn.skadnetwork 22mmun2rn5.skadnetwork 44jx6755aq.skadnetwork k674qkevps.skadnetwork 4468km3ulz.skadnetwork 2u9pt9hc89.skadnetwork 8s468mfl3y.skadnetwork klf5c3l5u5.skadnetwork ppxm28t8ap.skadnetwork kbmxgpxpgc.skadnetwork uw77j35x4d.skadnetwork 578prtvx9j.skadnetwork 4dzt52r2t5.skadnetwork tl55sbb4fm.skadnetwork c3frkrj4fj.skadnetwork e5fvkxwrpn.skadnetwork 8c4e2ghe7u.skadnetwork 3rd42ekr43.skadnetwork 97r2b46745.skadnetwork 3qcr597p9d.skadnetwork"
+          i=0
+          for id in $SKAD_IDS; do
+            $PB -c "Add :SKAdNetworkItems:$i dict" "$PLIST"
+            $PB -c "Add :SKAdNetworkItems:$i:SKAdNetworkIdentifier string $id" "$PLIST"
+            i=$((i + 1))
+          done
           $PB -c "Set :ITSAppUsesNonExemptEncryption false" "$PLIST" 2>/dev/null || $PB -c "Add :ITSAppUsesNonExemptEncryption bool false" "$PLIST"
       - name: Sürüm + derleme numarası (TestFlight her yüklemede benzersiz ister)
         script: |
@@ -78,7 +87,7 @@ workflows:
           agvtool new-marketing-version 1.0.0
           agvtool new-version -all $BUILD_NUMBER
       - name: CocoaPods
-        script: cd ios/App && pod install
+        script: cd ios/App && pod install --repo-update
       # Kod imzalama: sertifika + provizyon profilini OTOMATİK oluştur/çek (Codemagic resmi yöntemi).
       # --create bayrağı: bundle ID, dağıtım sertifikası ve profil yoksa API ile üretir → "No matching
       # profiles" hatasının kesin çözümü. Kimlik bilgileri zipzip-asc entegrasyonundan gelir.
@@ -87,9 +96,15 @@ workflows:
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           keychain add-certificates
-          xcode-project use-profiles
+          # node_modules altındaki bağımlılık projelerini değil, yalnızca uygulama hedefini imzala.
+          xcode-project use-profiles \
+            --project "$CM_BUILD_DIR/ios/App/App.xcodeproj" \
+            --code-signing-setup-verbose-logging
       - name: İmzalı IPA derle
-        script: xcode-project build-ipa --workspace ios/App/App.xcworkspace --scheme App
+        script: |
+          xcode-project build-ipa \
+            --workspace "$CM_BUILD_DIR/ios/App/App.xcworkspace" \
+            --scheme App
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log

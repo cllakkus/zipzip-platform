@@ -76,47 +76,20 @@ Apple Developer üyeliği alındı → yayın hattı kuruldu:
 
 ---
 
-## (TARİHÇE) DURUM (2026-07-03): Kod hazır, native kütüphane imzalı aşamada açılacak
+## DURUM (2026-07-14): Native AdMob reklamlı yayın akışında aktif
 Senin ID'lerin (kayıtlı, kaybolmaz):
 - **App ID:** `ca-app-pub-3400523383108649~8516756590`
 - **Ödüllü Reklam Birimi:** `ca-app-pub-3400523383108649/6189177394`
 
-**Neden native eklenti şimdi build'de değil?** Codemagic'in "simülatör testi" derlemesinde
-Google'ın reklam kütüphanesi (@capacitor-community/admob) mevcut Xcode ile derlenmedi
-(`status 65`; Xcode 15.4 de artık desteklenmiyor). **Gerçek reklam zaten yalnız imzalı,
-gerçek telefon derlemesinde test edilebilir** (Apple Developer hesabı gerekir). Bu yüzden
-native eklentiyi imzalı aşamaya erteledik — build tekrar YEŞİL, hiçbir şey kaybolmadı:
-- `index.html`'deki reklam kodu **duruyor**; native eklenti yokken otomatik simülasyona
-  düşer (cihazda da şimdilik 2 sn'lik simülasyon gösterir).
-- `privacy.html` + `PRIVACY.md` reklam/ATT açıklaması **duruyor** (yayında geçerli olacak).
-
-## ▶️ İMZALI AŞAMADA NATIVE REKLAMI AÇMAK (Apple hesabı bağlanınca)
-Apple Developer hesabı + Codemagic Code signing hazır olunca, native reklamı 3 adımda aç:
-
-1. **package.json** → `dependencies` içine geri ekle:
-   ```json
-   "@capacitor-community/admob": "^6.0.0"
-   ```
-2. **codemagic.yaml** → `npx cap sync ios` satırından SONRA şu adımı ekle
-   (App ID olmadan uygulama açılışta çöker):
-   ```yaml
-   - name: AdMob Info.plist yapılandır
-     script: |
-       PLIST="ios/App/App/Info.plist"; PB=/usr/libexec/PlistBuddy
-       APPID="ca-app-pub-3400523383108649~8516756590"
-       ATT="Reklamlari sana daha alakali gosterebilmek icin kullanilir."
-       $PB -c "Set :GADApplicationIdentifier $APPID" "$PLIST" 2>/dev/null || $PB -c "Add :GADApplicationIdentifier string $APPID" "$PLIST"
-       $PB -c "Set :NSUserTrackingUsageDescription $ATT" "$PLIST" 2>/dev/null || $PB -c "Add :NSUserTrackingUsageDescription string $ATT" "$PLIST"
-   ```
-3. İlk imzalı build'de derlenmezse: o an Codemagic'in desteklediği Xcode sürümlerinden
-   uygun olanı seç (UI'da liste var) veya eklenti/GMA SDK sürümünü sabitle. İmzalı **cihaz**
-   derlemesi, simülatör derlemesinden daha güvenilir derlenir.
+Yayın sürümü Node 22 + Capacitor 8 + `@capacitor-community/admob` 8.0.0 kullanır. Bu sürüm
+Xcode 26 ve Google Mobile Ads SDK 12.14 ile uyumludur. `codemagic.yaml` App ID, ATT açıklaması,
+SKAdNetwork ve UMP gizlilik izinlerini hazırlar; gerçek ödüllü reklam yalnızca imzalı cihaz veya
+TestFlight sürümünde doğrulanabilir.
 
 ## 🚨 YAYINDAN ÖNCE TEK KRİTİK ADIM
-`index.html` içinde `const AD_TESTING = true;` satırı var.
-- **Test/TestFlight:** `true` kalsın — Google TEST reklamları; kendi reklamına tıklamak
-  hesabını YASAKLATMAZ.
-- **App Store'a göndermeden hemen önce:** `false` yap → GERÇEK reklamlar + gelir başlar.
+`index.html` içinde `const AD_TESTING = false;` kullanılır; yayın ve TestFlight gerçek reklam
+birimlerini kullanır. Test sırasında reklamı izleyip kapatabilirsin ancak kendi reklamına asla
+tıklama; geçersiz trafik AdMob hesabını riske atabilir.
 
 ## Notlar
 - Android build'i şu an Codemagic'te yok. Android'e çıkarsan `AndroidManifest.xml`'e de
