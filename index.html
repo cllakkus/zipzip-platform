@@ -66,34 +66,34 @@
   kbd { background:#1a2336; border:1px solid #2a3650; border-bottom-width:2px; border-radius:6px; padding:1px 8px; font-size:12px; color:var(--ink); }
   .hidden { display:none !important; }
   /* --- 2D PIXEL menü/ölüm ekranı --- */
-  .overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; text-align:center;
-    background:linear-gradient(180deg, rgba(18,26,50,.95), rgba(8,12,22,.97)); border-radius:12px; padding:16px; }
-  .pix-title { font-family:var(--pix); font-size:clamp(20px,5vw,34px); color:#ffd24d; line-height:1.5; margin:0;
-    text-shadow:3px 3px 0 #b03a2a, 6px 6px 0 rgba(0,0,0,.55); }
-  .death .pix-title { color:#ff6b6b; text-shadow:3px 3px 0 #5a1818, 6px 6px 0 rgba(0,0,0,.55); }
-  .pix-sub { font-family:var(--pix); font-size:clamp(8px,2.2vw,11px); color:#9ad0ff; line-height:1.9; max-width:90%; margin:0; }
-  .btn.pix { font-family:var(--pix); font-size:clamp(11px,2.6vw,14px); color:#3a2a04; background:#ffc23a; border:none; border-radius:0; padding:16px 22px; cursor:pointer; letter-spacing:1px;
-    box-shadow:0 0 0 4px #4a3208, 5px 5px 0 4px rgba(0,0,0,.45), inset -3px -3px 0 #c98a1e, inset 3px 3px 0 #ffe27a; }
-  .btn.pix:active { transform:translate(2px,2px); box-shadow:0 0 0 4px #4a3208, 2px 2px 0 4px rgba(0,0,0,.45), inset -3px -3px 0 #c98a1e, inset 3px 3px 0 #ffe27a; }
-  .btn.pix.alt { background:#7adb8a; color:#103a18; box-shadow:0 0 0 4px #1f4a2a, 5px 5px 0 4px rgba(0,0,0,.45), inset -3px -3px 0 #3f8f4a, inset 3px 3px 0 #c6f0c8; }
+  .overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center;
+    background:linear-gradient(180deg, rgba(18,26,50,.95), rgba(8,12,22,.97)); border-radius:12px; padding:18px 20px; }
+  .pix-title { font-family:var(--pix); font-size:clamp(16px,3.4vw,26px); color:#ffd24d; line-height:1.25; letter-spacing:.04em; margin:0;
+    text-shadow:2px 2px 0 #b03a2a, 4px 4px 0 rgba(0,0,0,.55); }
+  .death .pix-title { color:#ff6b6b; text-shadow:2px 2px 0 #5a1818, 4px 4px 0 rgba(0,0,0,.55); }
+  .pix-sub { font-family:var(--pix); font-size:clamp(7px,1.7vw,10px); color:#9ad0ff; line-height:1.75; max-width:min(88%,680px); margin:0; }
+  .btn.pix { min-width:150px; font-family:var(--pix); font-size:clamp(9px,2vw,12px); color:#3a2a04; background:#ffc23a; border:2px solid #65460c; border-radius:5px; padding:12px 18px; cursor:pointer; letter-spacing:.06em;
+    box-shadow:0 4px 0 #4a3208, 0 8px 14px rgba(0,0,0,.35), inset -3px -3px 0 #c98a1e, inset 3px 3px 0 #ffe27a; }
+  .btn.pix:active { transform:translateY(3px); box-shadow:0 1px 0 #4a3208, 0 4px 8px rgba(0,0,0,.35), inset -3px -3px 0 #c98a1e, inset 3px 3px 0 #ffe27a; }
+  .btn.pix.alt { background:#7adb8a; color:#103a18; border-color:#285c34; box-shadow:0 4px 0 #1f4a2a, 0 8px 14px rgba(0,0,0,.35), inset -3px -3px 0 #3f8f4a, inset 3px 3px 0 #c6f0c8; }
   .btn.pix.alt:active { transform:translate(2px,2px); }
-  /* --- dokunmatik kontroller (mobil) — gerçek gamepad görünümü --- */
+  /* --- dokunmatik kontroller: duvar bandına oturan kompakt pixel gamepad --- */
   #touch { display:none; }
   #touch.on { display:block; }
-  .tbtn { position:fixed; bottom:max(16px, 4vh, env(safe-area-inset-bottom, 0px)); z-index:31; pointer-events:auto; width:clamp(60px,15vw,78px); height:clamp(60px,15vw,78px);
-    font-family:var(--pix); font-size:17px; color:rgba(255,255,255,.95); border-radius:50%;
-    background:radial-gradient(circle at 35% 28%, #5a6a94, #2a3350 62%, #1a2138 100%);
-    border:2px solid rgba(160,190,255,.4);
-    box-shadow:0 6px 0 rgba(0,0,0,.5), 0 10px 18px rgba(0,0,0,.45), inset 0 3px 5px rgba(255,255,255,.28), inset 0 -8px 10px rgba(0,0,0,.4);
-    text-shadow:0 2px 3px rgba(0,0,0,.6);
+  .tbtn { position:fixed; bottom:max(10px, env(safe-area-inset-bottom, 0px)); z-index:31; pointer-events:auto; width:clamp(62px,10vw,78px); height:clamp(42px,7vw,52px);
+    font-family:var(--pix); font-size:clamp(7px,1.2vw,9px); letter-spacing:.02em; color:#eef4ff; border-radius:7px;
+    background:linear-gradient(180deg, #46557d 0 48%, #28344f 49% 100%);
+    border:2px solid #7185b0;
+    box-shadow:0 5px 0 #121a2b, 0 8px 12px rgba(0,0,0,.38), inset 2px 2px 0 rgba(255,255,255,.18), inset -2px -2px 0 rgba(0,0,0,.3);
+    text-shadow:0 2px 0 rgba(0,0,0,.65);
     display:flex; align-items:center; justify-content:center; touch-action:none; opacity:.94;
     transition:transform .05s, box-shadow .05s, filter .05s; }
-  .tbtn.pressed { transform:translateY(5px) scale(.97); filter:brightness(1.3);
-    box-shadow:0 1px 0 rgba(0,0,0,.5), 0 3px 8px rgba(0,0,0,.4), inset 0 3px 5px rgba(255,255,255,.2), inset 0 -4px 8px rgba(0,0,0,.35); }
-  #t-left { left:max(16px, 3.5vw, env(safe-area-inset-left, 0px)); } #t-right { left:calc(max(16px, 3.5vw, env(safe-area-inset-left, 0px)) + clamp(60px,15vw,78px) + 14px); }
-  #t-jump { right:max(16px, 3.5vw, env(safe-area-inset-right, 0px)); width:clamp(78px,19vw,98px); height:clamp(78px,19vw,98px); font-size:21px;
-    background:radial-gradient(circle at 35% 28%, #ffd97a, #e09a20 62%, #9a6210 100%);
-    border-color:rgba(255,230,150,.6); color:#4a2f04; text-shadow:0 2px 2px rgba(255,255,255,.35); }
+  .tbtn.pressed { transform:translateY(4px); filter:brightness(1.2);
+    box-shadow:0 1px 0 #121a2b, 0 3px 7px rgba(0,0,0,.35), inset 2px 2px 0 rgba(255,255,255,.12), inset -2px -2px 0 rgba(0,0,0,.25); }
+  #t-left { left:max(18px, 3vw, env(safe-area-inset-left, 0px)); }
+  #t-right { left:calc(max(18px, 3vw, env(safe-area-inset-left, 0px)) + clamp(62px,10vw,78px) + 10px); }
+  #t-jump { right:max(18px, 3vw, env(safe-area-inset-right, 0px)); width:clamp(70px,12vw,88px); height:clamp(46px,8vw,58px); font-size:clamp(7px,1.3vw,10px);
+    background:linear-gradient(180deg, #ffd66b 0 48%, #d99419 49% 100%); border-color:#ffe29a; color:#4a2f04; text-shadow:0 1px 0 rgba(255,255,255,.45); }
   /* --- açılış introsu (her açılışta) --- */
   #intro { position:fixed; inset:0; z-index:90; background:#05070d; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; transition:opacity 1.6s ease; }
   #intro.out { opacity:0; pointer-events:none; }
@@ -116,7 +116,7 @@
   .shop-item button.equipped { background:#7adb8a; color:#103a18; }
   .shop-item button.locked { background:#566; color:#bcd; }
   .row2 { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  .btn.pix.sm { font-size:clamp(9px,2.2vw,11px); padding:11px 16px; }
+  .btn.pix.sm { min-width:120px; font-size:clamp(8px,1.7vw,10px); padding:10px 14px; }
   .pop { animation:pop 2.4s ease-in-out infinite; } @keyframes pop { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
   .glow { animation:glow 1.1s ease-in-out infinite; } @keyframes glow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.18)} }
   .coin-line { animation:none; }
@@ -156,12 +156,6 @@
     font-size:18px; color:rgba(255,255,255,.9); background:rgba(20,28,52,.55); border:2px solid rgba(160,190,255,.35);
     display:flex; align-items:center; justify-content:center; touch-action:none; box-shadow:0 3px 8px rgba(0,0,0,.4); }
   #t-mute.pressed { transform:scale(.92); filter:brightness(1.3); }
-  /* dikey tutulan telefonda döndürme uyarısı */
-  #rotate { display:none; position:fixed; inset:0; z-index:300; background:#0b0f1c; flex-direction:column; align-items:center; justify-content:center; gap:18px; text-align:center; }
-  #rotate .r-ico { font-size:52px; animation:rot 1.6s ease-in-out infinite; }
-  #rotate p { font-family:var(--pix); font-size:11px; color:#9ad0ff; line-height:2; margin:0; }
-  @keyframes rot { 0%,100%{transform:rotate(0)} 50%{transform:rotate(90deg)} }
-  @media (pointer:coarse) and (orientation:portrait) and (max-width:600px) { #rotate { display:flex; } }
 </style>
 </head>
 <body>
@@ -201,16 +195,16 @@
       <button id="end-menu" class="btn pix alt">ANA MENÜ</button>
     </div>
     <div id="adv" class="overlay hidden">
-      <h2 class="pix-title" style="font-size:clamp(14px,3.5vw,22px)">REKLAM</h2>
+      <h2 class="pix-title">REKLAM</h2>
       <p class="pix-sub" id="adv-text">REKLAM YÜKLENİYOR…</p>
     </div>
     <div id="levels" class="overlay hidden">
-      <h2 class="pix-title" style="font-size:clamp(16px,4vw,24px)">BÖLÜMLER</h2>
+      <h2 class="pix-title">BÖLÜMLER</h2>
       <div id="levels-grid"></div>
       <button id="levels-back" class="btn pix alt sm">‹ GERİ</button>
     </div>
     <div id="shop" class="overlay hidden">
-      <h2 class="pix-title" style="font-size:clamp(15px,3.6vw,22px)">DÜKKAN · 🪙 <span id="shop-coins">0</span></h2>
+      <h2 class="pix-title">DÜKKAN · 🪙 <span id="shop-coins">0</span></h2>
       <div class="row2"><button id="tab-cos" class="shoptab on">KOSTÜM</button><button id="tab-up" class="shoptab">GÜÇLER</button></div>
       <div id="shop-list"></div>
       <button id="shop-back" class="btn pix alt sm">‹ GERİ</button>
@@ -218,12 +212,11 @@
   </div>
 </div>
 <div id="touch">
-  <button class="tbtn" id="t-left">◀</button>
-  <button class="tbtn" id="t-right">▶</button>
-  <button class="tbtn jump" id="t-jump">▲</button>
+  <button class="tbtn" id="t-left">GERİ</button>
+  <button class="tbtn" id="t-right">İLERİ</button>
+  <button class="tbtn jump" id="t-jump">ZIPLA</button>
   <button id="t-mute">🔊</button>
 </div>
-<div id="rotate"><div class="r-ico">📱</div><p>TELEFONU YAN ÇEVİR<br>OYUN YATAY OYNANIR</p></div>
 
 <script>
 "use strict";
@@ -249,19 +242,27 @@ const sfx={ jump:()=>tone(420,0.13,"square",0.14,760), big:()=>tone(520,0.22,"sa
   // ürkütücü kahkaha: detune'lu çift katman (disonans) + inen ton dizisi + alçak gürültü uğultusu
   laugh:()=>{ [0,150,320,510,730].forEach((ms,i)=>setTimeout(()=>{ tone(330-i*38,0.24,"sawtooth",0.14,290-i*40); tone(335-i*38,0.24,"square",0.07,295-i*40); },ms));
     setTimeout(()=>tone(72,0.85,"sawtooth",0.15,46),350); } };
-const PENT=[0,3,5,7,10,12,15], PROG=[-12,-5,-9,-7];
 let mus={timer:null,step:0,next:0,on:true};
 function noteHz(s){ return 220*Math.pow(2,s/12); }
+function midiHz(note){ return 440*Math.pow(2,(note-69)/12); }
+// Neşeli, okunaklı bir 8-bit platform teması. Boş adımlar melodiyi nefesli tutar.
+const CHIP_MELODY=[
+  72,null,76,null,79,null,76,null, 74,null,72,null,69,null,67,null,
+  69,null,72,null,76,null,72,null, 71,null,67,null,69,null,71,null,
+  72,null,76,null,79,81,79,76,null, 74,null,77,null,76,null,72,null,
+  69,null,72,74,76,null,72,null, 71,null,69,null,67,null,67,null
+];
+const CHIP_ROOTS=[48,45,53,55,48,53,45,55];
+const CHIP_CHORDS=[[60,64,67],[57,60,64],[53,57,60],[55,59,62],[60,64,67],[53,57,60],[57,60,64],[55,59,62]];
 function startMusic(){ if(!actx||mus.timer)return; mus.step=0; mus.next=actx.currentTime+0.15;
-  mus.timer=setInterval(()=>{ if(!actx)return; const lvl=state?state.levelIdx:0, tn=Math.min(1,lvl/60), spb=0.20-0.07*tn, ahead=0.3;
+  mus.timer=setInterval(()=>{ if(!actx)return; const spb=60/138/2, ahead=0.3;
     while(mus.next<actx.currentTime+ahead){ const s=mus.step;
-      if(mus.on&&!muted){ const bar=((s/8)|0)%4, root=PROG[bar];
-        toneAt(noteHz(24+root+PENT[(s*2+bar)%PENT.length]+(s%8>=6?12:0)),0.13,"triangle",0.05+0.02*tn,mus.next);
-        if(s%2===0) toneAt(noteHz(root),0.32,"sine",0.07,mus.next);
-        if(s%8===0) toneAt(noteHz(12+root+PENT[bar%PENT.length]),0.5,"sine",0.03,mus.next);
-        if(tn>0.4 && s%2===1) toneAt(6500,0.02,"square",0.01+0.02*tn,mus.next);
-        if(tn>0.7 && s%4===0) toneAt(noteHz(root-12),0.12,"sawtooth",0.04,mus.next); }
-      mus.step=(mus.step+1)%32; mus.next+=spb; } },45); }
+      if(mus.on&&!muted){ const bar=(s/8)|0, melody=CHIP_MELODY[s], chord=CHIP_CHORDS[bar];
+        if(melody!=null) toneAt(midiHz(melody),spb*0.72,"square",0.027,mus.next);
+        if(s%4===0) toneAt(midiHz(CHIP_ROOTS[bar]),spb*3.35,"triangle",0.045,mus.next);
+        if(s%2===0) toneAt(midiHz(chord[(s/2)%3|0]),spb*1.45,"triangle",0.014,mus.next);
+        if(s%8===0||s%8===4) toneAt(72,0.07,"sine",0.024,mus.next); }
+      mus.step=(mus.step+1)%64; mus.next+=spb; } },45); }
 function deathJingle(){ if(!actx)return; const t=actx.currentTime; [0,-2,-4,-7,-12].forEach((n,k)=>toneAt(noteHz(12+n),0.22,"sawtooth",0.12,t+k*0.13)); }
 
 // ================= GİRDİ =================
@@ -272,7 +273,7 @@ addEventListener("keyup",e=>{ keys[e.code]=false; if(e.code==="Space"||e.code===
 
 // ================= FİZİK =================
 const GRAV=2000, MOVE=2200, MAXVX=270, FRICTION=1800, JUMP=660, JUMP_HI=940, COYOTE=0.09, BUFFER=0.10;
-const GROUND_Y=440, BUFF_DUR=10;
+const GROUND_Y=424, BUFF_DUR=10;
 
 // ================= BİYOMLAR (8) =================
 const BIOMES=[
@@ -340,7 +341,8 @@ function pickBuff(i,hasHigh){ if(hasHigh) return (i%4===1)?"doublejump":"hijump"
 
 // ================= SEVİYE ÜRETİCİ =================
 function buildLevel(i){
-  const d=i, rng=mulberry32(((i+11)*2654435761)>>>0), hasHigh=(i%2===1), buff=pickBuff(i,hasHigh), bio=biomeFor(i);
+  // 7. bölümdeki hareketli duvar öğretici akışı bozuyordu; burada yüksek zıplama verilir.
+  const d=i, rng=mulberry32(((i+11)*2654435761)>>>0), hasHigh=(i%2===1), buff=(i===6)?"hijump":pickBuff(i,hasHigh), bio=biomeFor(i);
   const platforms=[], coins=[], spikes=[], enemies=[], boxes=[], movers=[];
   const G=(a,b)=>platforms.push({x:a,y:GROUND_Y,w:b-a,h:160,kind:"ground"});
   const PL=(x,y,w)=>platforms.push({x,y,w,h:18,kind:"plat"});
@@ -364,7 +366,10 @@ function buildLevel(i){
   function wall(){ const w=560; G(x,x+w); const h=Math.min(52+d*4,90); WALL(x+240,h,34); COIN(x+340,400); EN(etype(),x+440,x+390,x+520); x+=w; }
   function spikePit(){ const w=600; G(x,x+w); const sw=Math.min(56+d*5,106); SPK(x+250,sw); COIN(x+250+sw/2,360); if(rng()<0.5)EN(etype(),x+w*0.85,x+w*0.65,x+w-40); x+=w; }
   function pillars(){ const w=700; const pre=130; G(x,x+pre); let px=x+pre+90; for(let k=0;k<3;k++){ PL(px-40,360,80); COIN(px,330); px+=125; } G(px+10,x+w); x+=w; }
-  function movingWall(){ const w=620; G(x,x+w); MOVERH(x+300,GROUND_Y-100,24,100,110+Math.min(d*4,100),1.4+rng()*0.7); COIN(x+w*0.8,400); if(rng()<0.6)EN(etype(),x+w*0.85,x+w*0.6,x+w-40); x+=w; }
+  function movingWall(){ const w=620; G(x,x+w);
+    if(d===6){ PL(x+240,GROUND_Y-42,72); WALL(x+330,72,34); }
+    else MOVERH(x+300,GROUND_Y-100,24,100,110+Math.min(d*4,100),1.4+rng()*0.7);
+    COIN(x+w*0.8,GROUND_Y-40); if(rng()<0.6)EN(etype(),x+w*0.85,x+w*0.6,x+w-40); x+=w; }
   function elevator(){ const w=560; const pre=170; G(x,x+pre); const gw=108; MOVERV(x+pre+gw/2-50,GROUND_Y-110,100,18,70,1.15); COIN(x+pre+gw/2,250); G(x+pre+gw,x+w); x+=w; } // boşluk atlanabilir; asansör yüksek coin için bonus
   function flyZone(){ const w=460; G(x,x+w); EN("flyer",x+w*0.5,x+50,x+w-50); EN("flyer",x+w*0.7,x+50,x+w-50); COIN(x+w*0.5,360); x+=w; }
   function tower(){ const w=640; G(x,x+w); PL(x+210,360,90); PL(x+320,300,90); PL(x+230,240,130); SPECIAL(x+270,225); SPECIAL(x+320,225); EN("runner",x+300,x+230,x+370,240-28); x+=w; }
@@ -831,8 +836,9 @@ function drawBox(b){
   const bf=BUFFS[b.buff]||BUFFS.grow, col=b.used?"#6b6470":bf.col;
   ctx.save(); ctx.translate(cx,cy);
   if(!b.used){ ctx.globalAlpha=0.35+0.15*Math.sin(state.t*5); ctx.fillStyle=col; ctx.beginPath(); ctx.arc(0,0,24,0,7); ctx.fill(); ctx.globalAlpha=1; ctx.shadowColor=col; ctx.shadowBlur=14; }
-  ctx.rotate(Math.PI/4); ctx.fillStyle=col; roundRect(-13,-13,26,26,5); ctx.fill(); ctx.fillStyle="rgba(255,255,255,0.5)"; roundRect(-8,-10,7,18,3); ctx.fill(); ctx.rotate(-Math.PI/4); ctx.shadowBlur=0;
-  ctx.fillStyle=b.used?"#3a3640":"#fff"; ctx.font="bold 15px Fredoka,system-ui"; ctx.textAlign="center"; ctx.fillText(b.used?"·":bf.icon,0,6); ctx.textAlign="left";
+  ctx.rotate(Math.PI/4); ctx.fillStyle=col; roundRect(-13,-13,26,26,5); ctx.fill();
+  ctx.strokeStyle=b.used?"#4a4550":"rgba(255,255,255,.72)"; ctx.lineWidth=2; roundRect(-9,-9,18,18,4); ctx.stroke();
+  ctx.rotate(-Math.PI/4); ctx.shadowBlur=0;
   if(!b.used){ for(let k=0;k<3;k++){ const a=state.t*2+k*2.1; ctx.fillStyle=col; ctx.globalAlpha=0.8; ctx.fillRect(Math.cos(a)*20-1.5,Math.sin(a)*20-1.5,3,3); } ctx.globalAlpha=1; }
   ctx.restore();
 }
