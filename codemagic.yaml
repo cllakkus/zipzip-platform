@@ -49,8 +49,10 @@ workflows:
       app_store_connect: zipzip-asc
     environment:
       ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.zipzip.game
+        provisioning_profiles:
+          - zipzip-appstore-profile
+        certificates:
+          - zipzip-appstore-cert-2026
       node: 22
       xcode: latest
       cocoapods: default
@@ -91,9 +93,9 @@ workflows:
           agvtool new-version -all $BUILD_NUMBER
       - name: CocoaPods
         script: cd ios/App && pod install --repo-update
-      # Codemagic, environment.ios_signing altında seçilen Apple Distribution sertifikasını ve
-      # App Store profilini build başlamadan indirir. App Store Connect .p8 anahtarı tek başına
-      # uygulama imzalamaz; Codemagic Code signing identities bölümünde eşleşen iki dosya bulunmalıdır.
+      # Codemagic, environment.ios_signing altında referans adları açıkça verilen Apple Distribution
+      # sertifikasını ve App Store profilini build başlamadan indirir. Bu, otomatik bundle ID/tür
+      # eşleştirmesinin profili bulamaması durumunu da önler.
       - name: Kod imzalama ve profili doğrula
         script: |
           if ! security find-identity -v -p codesigning | grep -Eq '"(Apple|iPhone) Distribution:'; then
