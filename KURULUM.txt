@@ -1,17 +1,13 @@
-ZIPZIP - IKON VE GORUNMEYEN BUTON DUZELTMESI
+ZIPZIP - KUCUK VE DUVAR ICINDE KONTROL BUTONLARI
 
-Bu paket yalnizca su sorunlari duzeltir:
-- ZIPZIP uygulama ikonunu verilen golgehan ikonuna sabitler.
-- Sol, sag ve zipla butonlarini HTML icine gomerek iPhone'da gorunur yapar.
+Bu paket yalnizca oyun icindeki sol, sag ve zipla butonlarinin boyutunu ve konumunu degistirir.
+Ikon, bolumler, reklamlar, menuler ve diger oyun kodlari degistirilmedi.
 
-UYGULAMA
-1. Paketin icindeki tum dosyalari su klasore cikartin:
+1. Paketi su klasore cikartin:
    C:\Users\cllak\OneDrive\Desktop\zipzip-platform
 
 2. Windows sorarsa "Hedefteki dosyalari degistir" secenegini kullanin.
 
-3. GitHub Desktop'ta degisiklikleri commit edin ve Push origin tusuna basin.
+3. GitHub Desktop'ta commit ve Push origin yapin.
 
-4. Codemagic'te yeni build baslatin. Eski build duzelmez; yeni build kurulmalidir.
-
-Not: Oyun mekanigi, bolumler, reklamlar, menuler ve diger gorseller degistirilmedi.
+4. Codemagic'te yeni build baslatin.
