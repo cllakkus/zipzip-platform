@@ -307,6 +307,34 @@
     #overlay .row2 .btn { min-height:37px; max-height:37px; }
     #overlay #btn-reset,#overlay #btn-ad-privacy { min-height:30px; max-height:30px; }
   }
+
+/* === TAM EKRAN + KOMPAKT ARAYÜZ v3 === */
+html,body{width:100%;height:100%;background:#061126}
+body.mplay .wrap{width:100vw;height:100vh;height:100dvh;min-height:0;padding:0;gap:0;display:block;overflow:hidden}
+body.mplay .stage{position:fixed;inset:0;width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;margin:0!important}
+body.mplay .stage>canvas,body.mplay .stage>.overlay{width:100%!important;height:100%!important;max-width:none!important;border:0!important;border-radius:0!important}
+body.mplay #overlay,body.mplay #levels,body.mplay #shop{box-shadow:inset 0 0 0 2px rgba(76,126,210,.38),inset 0 0 44px rgba(1,7,22,.34)}
+#overlay .pix-title{font-family:var(--game);font-size:clamp(34px,5.8vw,54px);font-weight:900;line-height:.94;letter-spacing:.045em;-webkit-text-stroke:0;text-shadow:0 4px 0 #281b14,0 8px 15px rgba(0,0,0,.54);max-width:62%;white-space:nowrap}
+#overlay .pix-title .zip-gold{color:#ffc13d;text-shadow:0 4px 0 #8f4d08,0 8px 15px rgba(255,176,18,.18)}
+#overlay .pix-title .zip-blue{color:#61bdff;text-shadow:0 4px 0 #17578e,0 8px 15px rgba(52,158,255,.18)}
+#overlay .pix-sub:not(.coin-line){font-family:var(--game);font-size:clamp(11px,1.55vw,15px);font-weight:700;line-height:1.22;letter-spacing:.035em;max-width:58%;text-transform:none;color:#edf5ff;text-shadow:0 2px 4px #020713}
+#overlay .coin-line,.shop-wallet{width:auto;min-width:82px;max-width:132px;height:34px;padding:6px 12px 6px 37px;border:1px solid rgba(126,173,238,.72);border-radius:18px;background:linear-gradient(180deg,rgba(17,40,77,.9),rgba(6,19,43,.9));box-shadow:0 5px 14px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.14);font-family:var(--game);font-size:17px;font-weight:850;color:#ffe083;letter-spacing:.03em}
+#overlay .coin-line{left:max(18px,env(safe-area-inset-left));top:max(15px,env(safe-area-inset-top))}.shop-wallet{right:max(18px,env(safe-area-inset-right));top:max(15px,env(safe-area-inset-top))}
+#overlay .coin-medal,.shop-wallet .coin-medal{left:8px;top:6px;width:21px;height:21px;border-width:2px;box-shadow:0 0 10px rgba(255,191,46,.36),inset 0 0 0 2px rgba(255,246,175,.28)}
+.btn.pix,#overlay .btn,#death .btn,#pause .btn,#adv .btn{clip-path:none!important;border-radius:12px!important;border:1px solid rgba(255,255,255,.34)!important;min-height:40px;padding:9px 16px;font-family:var(--game)!important;font-size:clamp(12px,1.75vw,16px)!important;font-weight:850!important;line-height:1.05;letter-spacing:.035em;text-shadow:0 1px 2px rgba(0,0,0,.45);box-shadow:0 4px 0 rgba(3,9,24,.65),0 8px 16px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.24)!important;transition:transform .1s ease,filter .1s ease,box-shadow .1s ease}
+.btn.pix:active,#overlay .btn:active,#death .btn:active,#pause .btn:active{transform:translateY(3px) scale(.985);box-shadow:0 1px 0 rgba(3,9,24,.7),0 4px 9px rgba(0,0,0,.18)!important}
+#overlay .btn::before,#death .btn::before,#pause .btn::before{display:none!important}
+#overlay #btn-new{width:min(250px,42vw);background:linear-gradient(135deg,#23c8d7,#1975d4)!important;color:#fff!important;border-color:#77e8f4!important}
+#overlay #btn-continue{width:min(250px,42vw);background:linear-gradient(135deg,#7458e8,#3a77da)!important;color:#fff!important;border-color:#aa9aff!important}
+#overlay .row2{width:min(350px,58%);gap:10px}#overlay #btn-levels{background:linear-gradient(135deg,#ffbd38,#df7d13)!important;color:#211200!important;border-color:#ffe18a!important}#overlay #btn-shop{background:linear-gradient(135deg,#d65bd1,#7c49d7)!important;color:#fff!important;border-color:#f1a2ed!important}
+#overlay #btn-reset{width:auto;min-width:145px;max-width:220px;min-height:30px;padding:6px 14px;margin-top:5px;border-radius:16px!important;background:rgba(44,23,46,.68)!important;border:1px solid rgba(255,116,139,.58)!important;color:#ffabb9!important;font-family:var(--game)!important;font-size:11px!important;font-weight:750!important;letter-spacing:.015em;box-shadow:0 3px 9px rgba(0,0,0,.2)!important;text-shadow:none}
+.shop-tabs{gap:9px}.shop-tab{clip-path:none;border-radius:11px!important;min-height:38px;padding:8px 14px;font-family:var(--game)!important;font-weight:800;letter-spacing:.03em;background:linear-gradient(180deg,#263f6c,#142748)!important;border:1px solid #4e6e9d!important;color:#cbdaf1!important;box-shadow:0 3px 0 #081429!important}.shop-tab.active{background:linear-gradient(135deg,#23bfcf,#287ed8)!important;border-color:#75e5ee!important;color:#fff!important}.shop-item button{clip-path:none!important;border-radius:9px!important;font-family:var(--game)!important;font-size:12px!important;font-weight:800!important;background:linear-gradient(135deg,#ffbd38,#db7810)!important;border:1px solid #ffe497!important;box-shadow:0 3px 0 #784006!important}.shop-item button:disabled{background:linear-gradient(180deg,#536276,#374253)!important;border-color:#708096!important;box-shadow:0 3px 0 #202937!important}
+#death #death-ad{width:min(270px,70vw);background:linear-gradient(135deg,#23c8a7,#168ac8)!important;border-color:#7af1d4!important;color:#fff!important}#death #death-retry{background:linear-gradient(135deg,#3b8fee,#3157bd)!important;border-color:#8fc2ff!important;color:#fff!important}#death #death-menu{background:linear-gradient(135deg,#9559da,#6530a9)!important;border-color:#c899ff!important;color:#fff!important}#death .death-row,#pause .pause-row{gap:10px}#pause #pause-resume{background:linear-gradient(135deg,#28c695,#1887c8)!important;border-color:#7ce8d0!important;color:#fff!important}#pause #pause-menu{background:linear-gradient(135deg,#8854d6,#542c98)!important;border-color:#bd92f5!important;color:#fff!important}#adv .btn{background:linear-gradient(135deg,#394c70,#263552)!important;color:#eaf3ff!important}
+@media (max-width:700px),(pointer:coarse){#overlay .pix-title{font-size:clamp(30px,6vw,46px);max-width:58%}#overlay .pix-sub:not(.coin-line){font-size:clamp(10px,1.9vw,13px);max-width:56%}#overlay .menu{gap:8px}#overlay #btn-new,#overlay #btn-continue{width:min(230px,44vw);min-height:38px}#overlay .row2{width:min(330px,60%)}#overlay #btn-reset{margin-top:2px}}
+
+/* Dükkân sekmeleri: kompakt ve renkleri ayrışan son görünüm */
+.shoptab{clip-path:none!important;border-radius:11px!important;min-height:38px!important;max-height:38px!important;padding:8px 14px!important;font-family:var(--game)!important;font-size:12px!important;font-weight:800!important;letter-spacing:.025em;background:linear-gradient(180deg,#263f6c,#142748)!important;border:1px solid #4e6e9d!important;color:#cbdaf1!important;box-shadow:0 3px 0 #081429!important}
+.shoptab.on{background:linear-gradient(135deg,#23bfcf,#287ed8)!important;border-color:#75e5ee!important;color:#fff!important;box-shadow:0 3px 0 #0d4773!important}
 </style>
 </head>
 <body>
@@ -327,14 +355,14 @@
         <button id="btn-levels" class="btn pix sm">BÖLÜMLER</button>
         <button id="btn-shop" class="btn pix sm">DÜKKAN</button>
       </div>
-      <button id="btn-reset" class="btn pix sm alt">↻ İLERLEMEYİ SIFIRLA</button>
+      <button id="btn-reset" class="btn pix sm alt">İlerlemeyi Sıfırla</button>
       <button id="btn-ad-privacy" class="btn pix sm hidden" style="margin-top:8px;font-size:7px;opacity:.7">REKLAM GİZLİLİK SEÇENEKLERİ</button>
     </div>
     <div id="death" class="overlay death hidden">
       <h2 class="pix-title">YAKALANDIN!</h2>
       <p class="pix-sub">SKOR: <span id="death-score">0</span></p>
       <button id="death-ad" class="btn pix glow" style="background:#7adb8a;color:#103a18;box-shadow:0 0 0 4px #1f4a2a,5px 5px 0 4px rgba(0,0,0,.45),inset -3px -3px 0 #3f8f4a,inset 3px 3px 0 #c6f0c8">REKLAM İZLE & DEVAM</button>
-      <p class="pix-sub" style="font-size:8px;color:#9ad0ff">ÖLDÜĞÜN YERDEN +2 SN DOKUNULMAZLIK</p>
+      <p class="pix-sub" style="font-size:8px;color:#9ad0ff">BÖLÜM BAŞINA 2 KEZ · +2 SN DOKUNULMAZLIK</p>
       <div class="row2">
         <button id="death-retry" class="btn pix sm alt">BAŞTAN</button>
         <button id="death-menu" class="btn pix sm">ANA MENÜ</button>
@@ -738,7 +766,7 @@ function loadLevel(idx,keepScore){ const sc=keepScore?state.score:0;
   const ups=getShop().upgrades||[]; state.up={ shield:ups.includes("startshield"), dcoin:ups.includes("doublecoin"), magnet:ups.includes("magnet"), djump:ups.includes("doublejump") };
   state.p={ x:70,y:GROUND_Y-38,w:32,h:42,vx:0,vy:0,onGround:true,coyote:0,face:1,invuln:0.6,walk:0,squash:0,blink:1,spin:0,djAvail:true };
   state.lastSafe={x:70,y:GROUND_Y-42};
-  state.cam=0; state.particles=[]; state.buffT=0; state.buffType=null; state.buffFlash=0; state.popups=state.popups||[]; state.deathT=0;
+  state.cam=0; state.particles=[]; state.buffT=0; state.buffType=null; state.buffFlash=0; state.popups=state.popups||[]; state.deathT=0; state.adRevives=0;
   state.escapeStyle=["run","fly","teleport","burrow","dragon"][(idx*3+1)%5]; state.escapeT=0; state.teleportAt=0.48;
   fxRings=[]; state.runCoins=keepScore?(state.runCoins||0):0;
   if(state.up.shield){ state.buffType="shield"; state.buffT=4; }   // Başlangıç Kalkanı gücü
@@ -760,19 +788,22 @@ function die(){ if(phase!=="play"&&phase!=="boss")return; const ls=state.lastSaf
   phase="dying"; state.deathT=0; state.p.vy=-520; state.p.spin=0; shake=0.5; mus.on=false; sfx.die(); deathJingle(); burst(state.p.x+15,state.p.y+15,"#ff5d5d",20); }
 function startBoss(){ phase="boss"; const band=Math.min(7,(state.levelIdx/12.5)|0);
   state.boss={ x:state.width-300, hp:3+band, maxhp:3+band, vx:50+band*5, atkCd:1.5, hurt:0, invuln:0.5, defeated:0 };
-  state.bossCam=Math.max(0,state.width-W); bossOrbs=[]; sfx.laugh(); }
+  state.bossCam=Math.max(0,state.width-W); bossOrbs=[]; popup("Boss'un başına zıpla!", "#ffd24d"); sfx.laugh(); }
 function startEscape(){ phase="chase"; state.escapeT=0; state.teleportAt=0.48; sfx.laugh(); }
 function showEnding(){ phase="ending"; document.getElementById("touch").classList.remove("on");
   document.getElementById("end-score").textContent=state.score; document.getElementById("ending").classList.remove("hidden"); saveProgress(); }
 function showDeath(){ phase="dead"; document.getElementById("death-score").textContent=state.score; updateRewardAdButton(); document.getElementById("death").classList.remove("hidden"); document.getElementById("touch").classList.remove("on"); }
 function restartLevel(){ document.getElementById("death").classList.add("hidden"); document.getElementById("touch").classList.add("on"); mus.on=true; loadLevel(state.levelIdx,true); }
 // REKLAM İZLE -> öldüğün yerden devam + 2sn dokunulmazlık
-function updateRewardAdButton(){ const b=document.getElementById("death-ad"); if(!b)return; const online=navigator.onLine!==false;
-  b.disabled=!online; b.textContent=online?"REKLAM İZLE & DEVAM":"İNTERNET YOK";
-  b.setAttribute("aria-label",online?"Reklam izle ve devam et":"İnternet bağlantısı olmadığı için reklam kullanılamıyor"); }
+function updateRewardAdButton(){ const b=document.getElementById("death-ad"); if(!b)return;
+  const online=navigator.onLine!==false, used=state?.adRevives||0, exhausted=used>=2;
+  b.disabled=!online||exhausted;
+  b.textContent=!online?"İNTERNET YOK":exhausted?"DEVAM HAKKI BİTTİ":`REKLAM İZLE & DEVAM · ${2-used}/2`;
+  b.setAttribute("aria-label",b.textContent); }
 function adContinue(){ if(navigator.onLine===false){ updateRewardAdButton(); return; }
-  const a=document.getElementById("adv"); document.getElementById("death").classList.add("hidden"); a.classList.remove("hidden"); playRewardedAd(()=>{ a.classList.add("hidden"); reviveAtSpot(); }); }
-function reviveAtSpot(){ if(!state||!state.level){ showMenu(); return; } const ds=state.deathSpot||{x:70,y:GROUND_Y-42,boss:false};
+  if((state?.adRevives||0)>=2){ updateRewardAdButton(); toast("Bu bölümde iki devam hakkını kullandın"); return; }
+  const a=document.getElementById("adv"); document.getElementById("death").classList.add("hidden"); a.classList.remove("hidden");
+  playRewardedAd(()=>{ state.adRevives=(state.adRevives||0)+1; a.classList.add("hidden"); reviveAtSpot(); }); }function reviveAtSpot(){ if(!state||!state.level){ showMenu(); return; } const ds=state.deathSpot||{x:70,y:GROUND_Y-42,boss:false};
   document.getElementById("touch").classList.add("on"); mus.on=true;
   state.p.x=ds.x; state.p.y=ds.y; state.p.vx=0; state.p.vy=0; state.p.onGround=true; state.p.invuln=2.0; state.p.djAvail=true;  // 2 sn dokunulmaz
   bossOrbs=[]; phase=ds.boss?"boss":"play"; }
@@ -1692,11 +1723,12 @@ addEventListener("pointerdown",unlockIntroAudio,{once:true});
 addEventListener("keydown",unlockIntroAudio,{once:true});
 // Mobil tam ekran güvencesi: dokunmatik cihazda oyunu ekrana piksel-piksel sığdır (CSS'e ek).
 function fitStage(){ const stage=document.querySelector(".stage"); if(!stage)return;
-  const touch = matchMedia("(pointer:coarse)").matches || ("ontouchstart" in window);
-  if(!touch){ document.body.classList.remove("mplay"); stage.style.width=""; return; }
+  const touch=matchMedia("(pointer:coarse)").matches || ("ontouchstart" in window);
+  if(!touch){ document.body.classList.remove("mplay"); stage.style.width=""; stage.style.height=""; return; }
   document.body.classList.add("mplay");
-  const w=Math.min(window.innerWidth, Math.round(window.innerHeight*900/520));
-  stage.style.width=w+"px"; }
+  const vv=window.visualViewport;
+  const w=Math.ceil(vv?.width||window.innerWidth), h=Math.ceil(vv?.height||window.innerHeight);
+  stage.style.width=w+"px"; stage.style.height=h+"px"; }
 addEventListener("resize",fitStage);
 addEventListener("orientationchange",()=>setTimeout(fitStage,200));
 if(window.visualViewport) visualViewport.addEventListener("resize",fitStage);
