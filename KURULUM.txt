@@ -1,0 +1,16 @@
+ZIPZIP - YENI OYUN ICI KONTROL BUTONLARI
+
+1. Bu paketin icindeki tum dosya ve klasorleri su klasore cikartin:
+   C:\Users\cllak\OneDrive\Desktop\zipzip-platform
+
+2. Windows sorarsa "Hedefteki dosyalari degistir" secenegini kullanin.
+
+3. GitHub Desktop'ta degisiklikleri commit edip Push origin tusuna basin.
+
+4. Codemagic'te yeni iOS build baslatin.
+
+Degisenler:
+- Sol ve sag butonlari: altin cerceveli, kahverengi zeminli yesil oklar.
+- Zipla butonu: altin cerceveli, yesil yuvarlak yukari ok.
+- Butonlar basildiginda fiziksel basma efekti korunur.
+- Kontrol davranislari degismedi; sadece gorunum ve boyutlar yenilendi.
