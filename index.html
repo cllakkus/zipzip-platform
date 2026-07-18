@@ -335,6 +335,25 @@ body.mplay #overlay,body.mplay #levels,body.mplay #shop{box-shadow:inset 0 0 0 2
 /* Dükkân sekmeleri: kompakt ve renkleri ayrışan son görünüm */
 .shoptab{clip-path:none!important;border-radius:11px!important;min-height:38px!important;max-height:38px!important;padding:8px 14px!important;font-family:var(--game)!important;font-size:12px!important;font-weight:800!important;letter-spacing:.025em;background:linear-gradient(180deg,#263f6c,#142748)!important;border:1px solid #4e6e9d!important;color:#cbdaf1!important;box-shadow:0 3px 0 #081429!important}
 .shoptab.on{background:linear-gradient(135deg,#23bfcf,#287ed8)!important;border-color:#75e5ee!important;color:#fff!important;box-shadow:0 3px 0 #0d4773!important}
+
+/* === MENÜ HİZASI + BÖLÜM SONU v4 === */
+.shop-item button,.shop-item button:disabled,.shop-item button.locked{color:#211500!important;text-shadow:none!important}
+#overlay .coin-line{position:relative!important;left:auto!important;top:auto!important;display:flex!important;align-items:center;justify-content:center;gap:9px;width:auto!important;min-width:118px!important;max-width:160px!important;height:36px!important;padding:6px 15px!important;margin:0 auto!important;overflow:visible!important;text-align:center!important}
+#overlay .coin-line .coin-medal{position:relative!important;left:auto!important;top:auto!important;width:22px!important;height:22px!important;flex:0 0 22px}
+#overlay .coin-line #menu-coins{display:inline!important;overflow:visible!important;line-height:1!important;text-align:center!important}
+#overlay .pix-title{font-size:clamp(34px,5.8vw,54px)!important;line-height:1!important;letter-spacing:.035em!important;text-shadow:0 4px 0 #8f4d08,0 7px 13px rgba(0,0,0,.45)!important}
+#overlay .pix-title span{display:inline-block;font-size:1em!important;line-height:1!important;vertical-align:baseline!important;transform:none!important;text-shadow:0 4px 0 #17578e,0 7px 13px rgba(0,0,0,.45)!important}
+#level-complete{gap:12px;background:radial-gradient(circle at 50% 38%,rgba(40,93,177,.38),transparent 42%),linear-gradient(180deg,rgba(7,20,49,.97),rgba(3,9,25,.98))}
+#level-complete .pix-title{font-family:var(--game);font-size:clamp(25px,4.5vw,40px);font-weight:900;color:#7de9ff;text-shadow:0 4px 0 #17638c,0 8px 18px rgba(0,0,0,.48)}
+.completion-stars{display:flex;align-items:center;justify-content:center;gap:13px;min-height:68px}
+.completion-star{display:inline-block;color:#32435f;font-size:clamp(42px,7vw,64px);line-height:1;filter:drop-shadow(0 4px 0 #101a2e);transform:scale(.72);opacity:.65;transition:transform .34s cubic-bezier(.18,.9,.28,1.5),color .25s,filter .25s,opacity .25s}
+.completion-star.filled{color:#ffd33f;opacity:1;transform:scale(1);filter:drop-shadow(0 4px 0 #9a5b08) drop-shadow(0 0 12px rgba(255,207,43,.7))}
+#level-result{font-family:var(--game);font-size:clamp(12px,2vw,17px);font-weight:800;color:#edf6ff;letter-spacing:.04em}
+#level-complete .row2{width:min(430px,72%);flex-wrap:nowrap;gap:11px}
+#level-complete .btn{width:50%;min-width:0!important;font-size:clamp(11px,1.7vw,15px)!important}
+#level-next{background:linear-gradient(135deg,#21c99b,#188fd0)!important;border-color:#7bf0d3!important;color:#fff!important}
+#level-home{background:linear-gradient(135deg,#8c59dc,#5e33a5)!important;border-color:#c59aff!important;color:#fff!important}
+@media(max-height:440px){#level-complete{gap:7px}.completion-stars{min-height:51px}.completion-star{font-size:42px}#level-complete .pix-title{font-size:27px}}
 </style>
 </head>
 <body>
@@ -366,6 +385,17 @@ body.mplay #overlay,body.mplay #levels,body.mplay #shop{box-shadow:inset 0 0 0 2
       <div class="row2">
         <button id="death-retry" class="btn pix sm alt">BAŞTAN</button>
         <button id="death-menu" class="btn pix sm">ANA MENÜ</button>
+      </div>
+    </div>
+    <div id="level-complete" class="overlay hidden">
+      <h2 class="pix-title">BÖLÜM TAMAMLANDI</h2>
+      <div class="completion-stars" aria-label="Bölüm yıldız derecesi">
+        <span class="completion-star">★</span><span class="completion-star">★</span><span class="completion-star">★</span>
+      </div>
+      <p id="level-result">BÖLÜM TAMAMLANDI</p>
+      <div class="row2">
+        <button id="level-next" class="btn pix">SONRAKİ SEVİYE</button>
+        <button id="level-home" class="btn pix">ANA MENÜ</button>
       </div>
     </div>
     <div id="ending" class="overlay hidden">
@@ -676,13 +706,13 @@ function drawWorldGrade(bio,tod){ ctx.save(); ctx.globalCompositeOperation="soft
 
 // ================= DURUM =================
 let state=null, phase="title", titleT=0, chaseT=0;
-const SAVE_KEY="zipzip_save", MAX_KEY="zipzip_max";
+const SAVE_KEY="zipzip_save", MAX_KEY="zipzip_max", STARS_KEY="zipzip_stars";
 function loadSave(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)); }catch(e){ return null; } }
 function getMax(){ return (+localStorage.getItem(MAX_KEY))||0; }
 function saveProgress(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({lvl:state.levelIdx, score:state.score})); if(state.levelIdx>getMax())localStorage.setItem(MAX_KEY,state.levelIdx); }catch(e){} }
 function refreshContinue(){ const s=loadSave(), b=document.getElementById("btn-continue"); if(s && (s.lvl|0)>0){ b.textContent="DEVAM ET · B."+((s.lvl|0)+1); b.classList.remove("hidden"); } else b.classList.add("hidden"); }
 function resetProgress(){ if(!confirm("İlerlemen 1. bölüme sıfırlansın mı? (Coin ve kostümler korunur)"))return; try{ localStorage.removeItem(SAVE_KEY); localStorage.removeItem(MAX_KEY); }catch(e){} refreshContinue(); }
-function hideOverlays(){ for(const id of ["death","ending","shop","levels","adv","pause","overlay"]){ const e=document.getElementById(id); if(e)e.classList.add("hidden"); } }
+function hideOverlays(){ for(const id of ["death","level-complete","ending","shop","levels","adv","pause","overlay"]){ const e=document.getElementById(id); if(e)e.classList.add("hidden"); } }
 function showMenu(){ phase="menu"; pausedFrom=null; mus.on=true; hideOverlays(); document.getElementById("touch").classList.remove("on"); overlay.classList.remove("hidden"); refreshContinue(); document.getElementById("menu-coins").textContent=getCoins(); }
 // ---- kalıcı GÜÇLER (oyun içi buff'ların DIŞINDA, dükkandan alınır) ----
 const UPGRADES=[
@@ -766,7 +796,7 @@ function loadLevel(idx,keepScore){ const sc=keepScore?state.score:0;
   const ups=getShop().upgrades||[]; state.up={ shield:ups.includes("startshield"), dcoin:ups.includes("doublecoin"), magnet:ups.includes("magnet"), djump:ups.includes("doublejump") };
   state.p={ x:70,y:GROUND_Y-38,w:32,h:42,vx:0,vy:0,onGround:true,coyote:0,face:1,invuln:0.6,walk:0,squash:0,blink:1,spin:0,djAvail:true };
   state.lastSafe={x:70,y:GROUND_Y-42};
-  state.cam=0; state.particles=[]; state.buffT=0; state.buffType=null; state.buffFlash=0; state.popups=state.popups||[]; state.deathT=0; state.adRevives=0;
+  state.cam=0; state.particles=[]; state.buffT=0; state.buffType=null; state.buffFlash=0; state.popups=state.popups||[]; state.deathT=0; state.adRevives=0; state.levelDeaths=0; state.levelStartT=state.t||0;
   state.escapeStyle=["run","fly","teleport","burrow","dragon"][(idx*3+1)%5]; state.escapeT=0; state.teleportAt=0.48;
   fxRings=[]; state.runCoins=keepScore?(state.runCoins||0):0;
   if(state.up.shield){ state.buffType="shield"; state.buffT=4; }   // Başlangıç Kalkanı gücü
@@ -782,8 +812,21 @@ function grantBuff(type){ state.buffT=BUFF_DUR; state.buffType=type; state.buffF
   ringFX(pcx,pcy,b.col,94); ringFX(pcx,pcy,"#ffffff",66); ringFX(pcx,pcy,shade(b.col,.28),38); shake=Math.max(shake,0.22); }
 function breakShield(){ state.buffT=0; state.buffType=null; state.p.invuln=1.1; sfx.hurt(); burst(state.p.x+15,state.p.y+15,"#6ab0ff",18); popup("🛡 Kalkan kırıldı!","#6ab0ff"); }
 function activateBox(b){ if(b.used)return; b.used=true; b.bump=0.28; grantBuff(b.buff); }
-function nextLevel(){ loadLevel((state.levelIdx+1)%LEVEL_COUNT,true); }
+function levelStars(){ const deaths=state.levelDeaths||0, ads=state.adRevives||0, elapsed=Math.max(1,(state.t||0)-(state.levelStartT||0));
+  const par=38+(state.width||1800)/55+(state.level?.boss?25:0);
+  if(deaths===0&&ads===0&&elapsed<=par)return 3;
+  if(deaths<=1&&ads<=1&&elapsed<=par*1.7)return 2;
+  return 1; }
+function saveLevelResult(stars){ try{ const all=JSON.parse(localStorage.getItem(STARS_KEY)||"{}"); all[state.levelIdx]=Math.max(all[state.levelIdx]||0,stars); localStorage.setItem(STARS_KEY,JSON.stringify(all));
+  const next=Math.min(LEVEL_COUNT-1,state.levelIdx+1); localStorage.setItem(SAVE_KEY,JSON.stringify({lvl:next,score:state.score})); if(next>getMax())localStorage.setItem(MAX_KEY,next); }catch(e){} }
+function showLevelComplete(){ if(phase==="complete")return; const stars=levelStars(); phase="complete"; document.getElementById("touch").classList.remove("on"); saveLevelResult(stars);
+  const box=document.getElementById("level-complete"), labels=["","ZORLU GEÇİŞ","İYİ GEÇİŞ","MÜKEMMEL GEÇİŞ"]; document.getElementById("level-result").textContent=labels[stars];
+  const icons=[...box.querySelectorAll(".completion-star")]; icons.forEach(x=>x.classList.remove("filled")); box.classList.remove("hidden"); icons.forEach((x,i)=>{if(i<stars)setTimeout(()=>{if(!box.classList.contains("hidden"))x.classList.add("filled");},180+i*260);}); }
+function nextLevel(){ showLevelComplete(); }
+function continueAfterLevel(){ document.getElementById("level-complete").classList.add("hidden"); mus.on=true; document.getElementById("touch").classList.add("on"); loadLevel(Math.min(LEVEL_COUNT-1,state.levelIdx+1),true); }
+function levelCompleteToMenu(){ document.getElementById("level-complete").classList.add("hidden"); showMenu(); }
 function die(){ if(phase!=="play"&&phase!=="boss")return; const ls=state.lastSafe||{x:70,y:GROUND_Y-42};
+  state.levelDeaths=(state.levelDeaths||0)+1;
   state.deathSpot={x:ls.x, y:ls.y, boss:(phase==="boss")};
   phase="dying"; state.deathT=0; state.p.vy=-520; state.p.spin=0; shake=0.5; mus.on=false; sfx.die(); deathJingle(); burst(state.p.x+15,state.p.y+15,"#ff5d5d",20); }
 function startBoss(){ phase="boss"; const band=Math.min(7,(state.levelIdx/12.5)|0);
@@ -857,7 +900,7 @@ async function playRewardedAd(onReward){
 // ================= GÜNCELLE =================
 let buffer=0;
 function update(dt){
-  if(!state)return; if(phase==="paused")return; state.t+=dt; updateAmbient(dt);
+  if(!state)return; if(phase==="paused"||phase==="complete")return; state.t+=dt; updateAmbient(dt);
   for(const pu of state.popups)pu.t+=dt; state.popups=state.popups.filter(pu=>pu.t<1.6);
   for(const pt of state.particles){ pt.vy+=900*dt; pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; pt.life-=dt; }
   state.particles=state.particles.filter(pt=>pt.life>0);
@@ -1676,6 +1719,8 @@ document.getElementById("btn-shop").addEventListener("click",openShop);
 document.getElementById("shop-back").addEventListener("click",showMenu);
 document.getElementById("death-retry").addEventListener("click",restartLevel);
 document.getElementById("death-menu").addEventListener("click",showMenu);
+document.getElementById("level-next").addEventListener("click",continueAfterLevel);
+document.getElementById("level-home").addEventListener("click",levelCompleteToMenu);
 document.getElementById("end-menu").addEventListener("click",showMenu);
 document.getElementById("menu-coins").textContent=getCoins();
 // bölüm seçim
