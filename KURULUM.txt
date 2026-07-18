@@ -1,16 +1,17 @@
-ZIPZIP - YENI OYUN ICI KONTROL BUTONLARI
+ZIPZIP - IKON VE GORUNMEYEN BUTON DUZELTMESI
 
-1. Bu paketin icindeki tum dosya ve klasorleri su klasore cikartin:
+Bu paket yalnizca su sorunlari duzeltir:
+- ZIPZIP uygulama ikonunu verilen golgehan ikonuna sabitler.
+- Sol, sag ve zipla butonlarini HTML icine gomerek iPhone'da gorunur yapar.
+
+UYGULAMA
+1. Paketin icindeki tum dosyalari su klasore cikartin:
    C:\Users\cllak\OneDrive\Desktop\zipzip-platform
 
 2. Windows sorarsa "Hedefteki dosyalari degistir" secenegini kullanin.
 
-3. GitHub Desktop'ta degisiklikleri commit edip Push origin tusuna basin.
+3. GitHub Desktop'ta degisiklikleri commit edin ve Push origin tusuna basin.
 
-4. Codemagic'te yeni iOS build baslatin.
+4. Codemagic'te yeni build baslatin. Eski build duzelmez; yeni build kurulmalidir.
 
-Degisenler:
-- Sol ve sag butonlari: altin cerceveli, kahverengi zeminli yesil oklar.
-- Zipla butonu: altin cerceveli, yesil yuvarlak yukari ok.
-- Butonlar basildiginda fiziksel basma efekti korunur.
-- Kontrol davranislari degismedi; sadece gorunum ve boyutlar yenilendi.
+Not: Oyun mekanigi, bolumler, reklamlar, menuler ve diger gorseller degistirilmedi.
